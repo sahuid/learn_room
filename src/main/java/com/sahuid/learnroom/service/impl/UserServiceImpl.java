@@ -9,10 +9,10 @@ import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataPresentException;
 import com.sahuid.learnroom.exception.RequestParamException;
-import com.sahuid.learnroom.model.dto.user.UserLoginDto;
-import com.sahuid.learnroom.model.dto.user.UserQueryDto;
-import com.sahuid.learnroom.model.dto.user.UserRegisterDto;
-import com.sahuid.learnroom.model.dto.user.UserUpdateDto;
+import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
+import com.sahuid.learnroom.model.dto.user.UserQueryRequest;
+import com.sahuid.learnroom.model.dto.user.UserRegisterRequest;
+import com.sahuid.learnroom.model.dto.user.UserUpdateRequest;
 import com.sahuid.learnroom.model.entity.User;
 
 import com.sahuid.learnroom.mapper.UserMapper;
@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public R<UserVo> userLogin(UserLoginDto userLoginDto, HttpServletRequest request) {
-        if (userLoginDto == null) {
+    public R<UserVo> userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        if (userLoginRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
-        String userAccount = userLoginDto.getUserAccount();
-        String userPassword = userLoginDto.getUserPassword();
+        String userAccount = userLoginRequest.getUserAccount();
+        String userPassword = userLoginRequest.getUserPassword();
 
         if (StrUtil.isBlank(userAccount) || StrUtil.isBlank(userPassword)) {
             throw new RequestParamException("请求参数错误");
@@ -59,12 +59,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public R<Void> userRegister(UserRegisterDto userRegisterDto) {
-        if (userRegisterDto == null) {
+    public R<Void> userRegister(UserRegisterRequest userRegisterRequest) {
+        if (userRegisterRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
-        String userAccount = userRegisterDto.getUserAccount();
-        String userPassword = userRegisterDto.getUserPassword();
+        String userAccount = userRegisterRequest.getUserAccount();
+        String userPassword = userRegisterRequest.getUserPassword();
         if (StrUtil.isBlank(userAccount) || StrUtil.isBlank(userPassword)) {
             throw new RequestParamException("请求参数错误");
         }
@@ -87,11 +87,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public R<Void> userUpdate(UserUpdateDto userUpdateDto) {
-        if (userUpdateDto == null) {
+    public R<Void> userUpdate(UserUpdateRequest userUpdateRequest) {
+        if (userUpdateRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
-        Long userId = userUpdateDto.getId();
+        Long userId = userUpdateRequest.getId();
         if (userId == null || userId <= 0) {
             throw new RequestParamException("请求参数错误");
         }
@@ -100,7 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new DataBaseAbsentException("数据不存在");
         }
 
-        String userName = userUpdateDto.getUserName();
+        String userName = userUpdateRequest.getUserName();
         if (StrUtil.isNotBlank(userName)) {
             user.setUserName(userName);
         }
@@ -119,12 +119,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public R<Page<User>> queryUserByPage(UserQueryDto userQueryDto) {
-        if (userQueryDto == null) {
+    public R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest) {
+        if (userQueryRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
-        int currentPage = userQueryDto.getPage();
-        int pageSize = userQueryDto.getPageSize();
+        int currentPage = userQueryRequest.getPage();
+        int pageSize = userQueryRequest.getPageSize();
         Page<User> page = new Page<>(currentPage, pageSize);
         this.page(page);
         return R.ok(page);

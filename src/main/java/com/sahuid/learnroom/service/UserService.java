@@ -2,10 +2,10 @@ package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.model.dto.user.UserLoginDto;
-import com.sahuid.learnroom.model.dto.user.UserQueryDto;
-import com.sahuid.learnroom.model.dto.user.UserRegisterDto;
-import com.sahuid.learnroom.model.dto.user.UserUpdateDto;
+import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
+import com.sahuid.learnroom.model.dto.user.UserQueryRequest;
+import com.sahuid.learnroom.model.dto.user.UserRegisterRequest;
+import com.sahuid.learnroom.model.dto.user.UserUpdateRequest;
 import com.sahuid.learnroom.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.UserVo;
@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface UserService extends IService<User> {
 
-    R<UserVo> userLogin(UserLoginDto userLoginDto, HttpServletRequest request);
+    R<UserVo> userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request);
 
-    R<Void> userRegister(UserRegisterDto userRegisterDto);
+    R<Void> userRegister(UserRegisterRequest userRegisterRequest);
 
-    R<Void> userUpdate(UserUpdateDto userUpdateDto);
+    R<Void> userUpdate(UserUpdateRequest userUpdateRequest);
 
     R<UserVo> getCurrentUser(HttpServletRequest request);
 
-    R<Page<User>> queryUserByPage(UserQueryDto userQueryDto);
+    R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest);
 }

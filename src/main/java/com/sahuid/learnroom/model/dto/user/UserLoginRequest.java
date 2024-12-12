@@ -3,7 +3,7 @@ package com.sahuid.learnroom.model.dto.user;
 import lombok.Data;
 
 @Data
-public class UserLoginDto {
+public class UserLoginRequest {
     /**
      * 用户账号
      */
