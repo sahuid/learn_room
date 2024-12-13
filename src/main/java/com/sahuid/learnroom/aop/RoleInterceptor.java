@@ -33,14 +33,12 @@ public class RoleInterceptor {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
 
-        R<UserVo> currentUser = userService.getCurrentUser(request);
-        UserVo userVo = currentUser.getValue();
-        Integer userRole = userVo.getUserRole();
+        UserVo currentUser = userService.getCurrentUser(request);
+        Integer userRole = currentUser.getUserRole();
         // 只有权限才能进入
         if (StrUtil.isNotBlank(mustRole)) {
             UserRoleEnums mustRoleEnum = UserRoleEnums.getCurrentUserRoleEnum(mustRole);
             if (mustRoleEnum == null) {
-                // 报错
                 throw new NoAuthException("没有权限访问");
             }
             String currentRoleName = UserRoleEnums.getCurrentRoleName(userRole);

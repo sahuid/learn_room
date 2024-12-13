@@ -2,10 +2,9 @@ package com.sahuid.learnroom.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.model.dto.questionbank.AddQuestionBankRequest;
-import com.sahuid.learnroom.model.dto.questionbank.QueryQuestionBankRequest;
-import com.sahuid.learnroom.model.dto.questionbank.UpdateQuestionBankRequest;
+import com.sahuid.learnroom.model.dto.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
+import com.sahuid.learnroom.model.vo.QuestionBankVo;
 import com.sahuid.learnroom.service.QuestionBankService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +34,32 @@ public class QuestionBankController {
 
 
     @GetMapping("/queryOne")
-    public R<QuestionBank> queryQuestionBankById(@RequestParam("id") Long id) {
-        QuestionBank questionBank = questionBankService.queryBankById(id);
+    public R<QuestionBankVo> queryQuestionBankById(QueryQuestionBankOneRequest queryQuestionBankOneRequest) {
+        QuestionBankVo questionBank = questionBankService.queryBankById(queryQuestionBankOneRequest);
         return R.ok(questionBank, "查询成功");
     }
 
     @GetMapping("/queryPage")
-    public R<Page<QuestionBank>> queryQuestionBankByPage(QueryQuestionBankRequest queryQuestionBankRequest){
-        Page<QuestionBank> page = questionBankService.queryQuestionBankByPage(queryQuestionBankRequest);
+    public R<Page<QuestionBank>> queryQuestionBankByPage(QueryQuestionBankByPageRequest queryQuestionBankByPageRequest){
+        Page<QuestionBank> page = questionBankService.queryQuestionBankByPage(queryQuestionBankByPageRequest);
         return R.ok(page, "查询成功");
     }
 
     @GetMapping("/delete")
     public R<Void> deleteQuestionBank(@RequestParam("ids")List<Long>ids) {
         questionBankService.deleteQuestionBanks(ids);
+        return R.ok("删除成功");
+    }
+
+    @PostMapping("/addQuestion")
+    public R<Void> addQuestionToBank(@RequestBody QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
+        questionBankService.addQuestionToBank(questionAndBankRequest, request);
+        return R.ok("添加成功");
+    }
+
+    @PostMapping("/deleteQuestion")
+    public R<Void> deleteQuestionFromBank(@RequestBody QuestionAndBankRequest questionAndBankRequest) {
+        questionBankService.deleteQuestionFromBank(questionAndBankRequest);
         return R.ok("删除成功");
     }
 }

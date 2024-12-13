@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
-    public R<UserVo> userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
         if (userLoginRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -54,12 +54,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         UserVo userVo = UserVo.userToVo(user);
         request.getSession().setAttribute("user", userVo);
-        return R.ok(userVo, "登录成功");
+        return userVo;
 
     }
 
     @Override
-    public R<Void> userRegister(UserRegisterRequest userRegisterRequest) {
+    public void userRegister(UserRegisterRequest userRegisterRequest) {
         if (userRegisterRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -83,11 +83,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         currentUser.setUserAccount(userAccount);
         currentUser.setUserPassword(md5Password);
         this.save(currentUser);
-        return R.ok();
     }
 
     @Override
-    public R<Void> userUpdate(UserUpdateRequest userUpdateRequest) {
+    public void userUpdate(UserUpdateRequest userUpdateRequest) {
         if (userUpdateRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -105,21 +104,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserName(userName);
         }
         boolean updateById = this.updateById(user);
-        return R.ok("修改成功");
     }
 
     @Override
-    public R<UserVo> getCurrentUser(HttpServletRequest request) {
+    public UserVo getCurrentUser(HttpServletRequest request) {
         Object user = request.getSession().getAttribute("user");
         if(user == null) {
             throw new RequestParamException("当前用户未登录");
         }
         UserVo userVo = (UserVo) user;
-        return R.ok(userVo);
+        return userVo;
     }
 
     @Override
-    public R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest) {
+    public Page<User> queryUserByPage(UserQueryRequest userQueryRequest) {
         if (userQueryRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -127,7 +125,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         int pageSize = userQueryRequest.getPageSize();
         Page<User> page = new Page<>(currentPage, pageSize);
         this.page(page);
-        return R.ok(page);
+        return page;
     }
 }
 

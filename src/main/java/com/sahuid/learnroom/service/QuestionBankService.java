@@ -1,11 +1,10 @@
 package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sahuid.learnroom.model.dto.questionbank.AddQuestionBankRequest;
-import com.sahuid.learnroom.model.dto.questionbank.QueryQuestionBankRequest;
-import com.sahuid.learnroom.model.dto.questionbank.UpdateQuestionBankRequest;
+import com.sahuid.learnroom.model.dto.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.sahuid.learnroom.model.vo.QuestionBankVo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -21,9 +20,13 @@ public interface QuestionBankService extends IService<QuestionBank> {
 
     void updateQuestionBank(UpdateQuestionBankRequest updateQuestionBankRequest, HttpServletRequest request);
 
-    QuestionBank queryBankById(Long id);
+    QuestionBankVo queryBankById(QueryQuestionBankOneRequest queryQuestionBankOneRequest);
 
-    Page<QuestionBank> queryQuestionBankByPage(QueryQuestionBankRequest queryQuestionBankRequest);
+    Page<QuestionBank> queryQuestionBankByPage(QueryQuestionBankByPageRequest queryQuestionBankByPageRequest);
 
     void deleteQuestionBanks(List<Long> ids);
+
+    void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request);
+
+    void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest);
 }

@@ -4,7 +4,7 @@ import com.sahuid.learnroom.common.PageRequest;
 import lombok.Data;
 
 @Data
-public class QueryQuestionBankRequest extends PageRequest {
+public class QueryQuestionBankByPageRequest extends PageRequest {
 
     /**
      * 题库名称

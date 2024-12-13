@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface UserService extends IService<User> {
 
-    R<UserVo> userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request);
+    UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request);
 
-    R<Void> userRegister(UserRegisterRequest userRegisterRequest);
+    void userRegister(UserRegisterRequest userRegisterRequest);
 
-    R<Void> userUpdate(UserUpdateRequest userUpdateRequest);
+    void userUpdate(UserUpdateRequest userUpdateRequest);
 
-    R<UserVo> getCurrentUser(HttpServletRequest request);
+    UserVo getCurrentUser(HttpServletRequest request);
 
-    R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest);
+    Page<User> queryUserByPage(UserQueryRequest userQueryRequest);
 }

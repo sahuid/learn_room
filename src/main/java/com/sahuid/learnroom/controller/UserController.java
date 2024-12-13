@@ -23,27 +23,32 @@ public class UserController {
 
     @PostMapping("/login")
     public R<UserVo> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
-        return userService.userLogin(userLoginRequest, request);
+        UserVo userVo = userService.userLogin(userLoginRequest, request);
+        return R.ok(userVo, "登录成功");
     }
 
     @PostMapping("/register")
     public R<Void> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
-        return userService.userRegister(userRegisterRequest);
+        userService.userRegister(userRegisterRequest);
+        return R.ok("注册成功");
     }
 
     @PostMapping("/update")
     public R<Void> userUpdate(@RequestBody UserUpdateRequest userUpdateRequest) {
-        return userService.userUpdate(userUpdateRequest);
+        userService.userUpdate(userUpdateRequest);
+        return R.ok("修改成功");
     }
 
     @GetMapping("/me")
     public R<UserVo> getCurrentUser(HttpServletRequest request){
-        return userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser(request);
+        return R.ok(currentUser);
     }
 
 
     @GetMapping("/queryPage")
     public R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest){
-        return userService.queryUserByPage(userQueryRequest);
+        Page<User> userPage = userService.queryUserByPage(userQueryRequest);
+        return R.ok(userPage, "获取成功");
     }
 }

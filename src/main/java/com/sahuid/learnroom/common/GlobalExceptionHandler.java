@@ -10,31 +10,37 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(RequestParamException.class)
     public R<?> requestParamExceptionHandler(RequestParamException e) {
-        log.error("RequestParamException:请求参数错误");
-        return R.fail(404, "请求参数错误");
+        log.error("RequestParamException:" + e.getMessage());
+        return R.fail(404, e.getMessage());
     }
 
     @ExceptionHandler(DataBaseAbsentException.class)
     public R<?> dataBaseAbsentException(DataBaseAbsentException e) {
-        log.error("DataBaseAbsentException:数据库不存在错误");
-        return R.ok("", "数据不存在");
+        log.error("DataBaseAbsentException:" + e.getMessage());
+        return R.ok("", e.getMessage());
     }
 
     @ExceptionHandler(NoAuthException.class)
     public R<?> NoAuthException(NoAuthException e) {
-        log.error("NoAuthException:当前用户没有权限");
-        return R.fail(403, "当前用户没有权限");
+        log.error("NoAuthException:" + e.getMessage());
+        return R.fail(403, e.getMessage());
     }
 
     @ExceptionHandler(NoLoginException.class)
     public R<?> NoLoginException(NoLoginException e) {
-        log.error("NoLoginException:当前用户没有登陆");
-        return R.fail(403, "当前用户没有登陆");
+        log.error("NoLoginException:" + e.getMessage());
+        return R.fail(403, e.getMessage());
     }
 
     @ExceptionHandler(DataPresentException.class)
     public R<?> DataPresentException(DataPresentException e) {
-        log.error("DataPresentException:数据已经存在");
-        return R.ok("", "数据已经存在");
+        log.error("DataPresentException:" + e.getMessage());
+        return R.ok("", e.getMessage());
+    }
+
+    @ExceptionHandler(DataOperationException.class)
+    public R<?> DataOperationException(DataOperationException e) {
+        log.error("DataOperationException:" + e.getMessage());
+        return R.fail(500, e.getMessage());
     }
 }

@@ -52,8 +52,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         String tagsStr = JSONUtil.parseArray(JSONUtil.toJsonStr(tags)).toString();
         question.setTags(tagsStr);
 
-        R<UserVo> currentUser = userService.getCurrentUser(request);
-        question.setUserId(currentUser.getValue().getId());
+        UserVo currentUser = userService.getCurrentUser(request);
+        question.setUserId(currentUser.getId());
         boolean save = this.save(question);
         // todo
         if (!save) {
