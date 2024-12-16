@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.UserVo;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Lenovo
@@ -28,4 +29,8 @@ public interface UserService extends IService<User> {
     UserVo getCurrentUser(HttpServletRequest request);
 
     Page<User> queryUserByPage(UserQueryRequest userQueryRequest);
+
+    void userSign(HttpServletRequest request);
+
+    List<Integer> getUserSignData(Integer year, HttpServletRequest request);
 }

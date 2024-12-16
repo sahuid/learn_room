@@ -6,7 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.common.R;
+import com.sahuid.learnroom.constants.RedisConstant;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
+import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.DataPresentException;
 import com.sahuid.learnroom.exception.RequestParamException;
 import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
@@ -18,10 +20,20 @@ import com.sahuid.learnroom.model.entity.User;
 import com.sahuid.learnroom.mapper.UserMapper;
 import com.sahuid.learnroom.model.vo.UserVo;
 import com.sahuid.learnroom.service.UserService;
+import com.sahuid.learnroom.utils.ThrowUtil;
+import io.swagger.models.auth.In;
+import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBitSet;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
 /**
 * @author Lenovo
@@ -29,7 +41,10 @@ import javax.servlet.http.HttpServletRequest;
 * @createDate 2024-12-11 11:35:19
 */
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+
+    private final RedissonClient redissonClient;
 
     @Override
     public UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
@@ -104,6 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserName(userName);
         }
         boolean updateById = this.updateById(user);
+        ThrowUtil.throwIf(!updateById, () -> new DataOperationException("修改失败"));
     }
 
     @Override
@@ -112,8 +128,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(user == null) {
             throw new RequestParamException("当前用户未登录");
         }
-        UserVo userVo = (UserVo) user;
-        return userVo;
+        return (UserVo) user;
     }
 
     @Override
@@ -126,6 +141,45 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Page<User> page = new Page<>(currentPage, pageSize);
         this.page(page);
         return page;
+    }
+
+    @Override
+    public void userSign(HttpServletRequest request) {
+        UserVo currentUser = this.getCurrentUser(request);
+        Long userId = currentUser.getId();
+        LocalDate date = LocalDate.now();
+        int year = date.getYear();
+
+        String key = RedisConstant.getUserSignKey(year, userId);
+        RBitSet bitSet = redissonClient.getBitSet(key);
+
+        int dayOfYear = date.getDayOfYear();
+        if (!bitSet.get(dayOfYear)) {
+            boolean sign = bitSet.set(dayOfYear);
+            ThrowUtil.throwIf(sign, () -> new DataOperationException("签到失败"));
+        }
+    }
+
+    @Override
+    public List<Integer> getUserSignData(Integer year, HttpServletRequest request) {
+        if (year == null) {
+            LocalDate now = LocalDate.now();
+            year = now.getYear();
+        }
+        UserVo currentUser = this.getCurrentUser(request);
+        Long userId = currentUser.getId();
+
+        String key = RedisConstant.getUserSignKey(year, userId);
+
+        RBitSet signBitSet = redissonClient.getBitSet(key);
+        BitSet bitSet = signBitSet.asBitSet();
+        List<Integer> result = new ArrayList<>();
+        int signDay = bitSet.nextSetBit(0);
+        while(signDay != -1) {
+            result.add(signDay);
+            signDay = bitSet.nextSetBit(signDay + 1);
+        }
+        return result;
     }
 }
 

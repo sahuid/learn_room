@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RequestMapping("/user")
 @RestController
@@ -50,5 +51,17 @@ public class UserController {
     public R<Page<User>> queryUserByPage(UserQueryRequest userQueryRequest){
         Page<User> userPage = userService.queryUserByPage(userQueryRequest);
         return R.ok(userPage, "获取成功");
+    }
+
+    @GetMapping("/sign")
+    public R<Void> userSign(HttpServletRequest request){
+        userService.userSign(request);
+        return R.ok("签到成功");
+    }
+
+    @GetMapping("/getSignData")
+    public R<List<Integer>> getUserSignData(Integer year, HttpServletRequest request) {
+        List<Integer> list = userService.getUserSignData(year, request);
+        return R.ok(list);
     }
 }
