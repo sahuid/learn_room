@@ -23,8 +23,10 @@ import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,15 +37,17 @@ import java.util.stream.Collectors;
  * @createDate 2024-12-12 12:08:39
  */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, QuestionBank>
         implements QuestionBankService {
 
-    private final UserService userService;
+    @Resource
+    private UserService userService;
 
-    private final QuestionService questionService;
+    @Resource
+    private QuestionService questionService;
 
-    private final QuestionBankQuestionService questionBankQuestionService;
+    @Resource
+    private QuestionBankQuestionService questionBankQuestionService;
 
     @Override
     public void addQuestionBank(AddQuestionBankRequest addQuestionBankRequest, HttpServletRequest request) {

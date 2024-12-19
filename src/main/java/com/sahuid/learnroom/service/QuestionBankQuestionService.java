@@ -1,7 +1,11 @@
 package com.sahuid.learnroom.service;
 
+import com.sahuid.learnroom.model.dto.questionAndBank.BatchAddQuestionToBankRequest;
+import com.sahuid.learnroom.model.dto.questionAndBank.BatchRemoveQuestionToBankRequest;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Lenovo
@@ -10,4 +14,16 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface QuestionBankQuestionService extends IService<QuestionBankQuestion> {
 
+    /**
+     * 批量添加题目到题库
+     * @param batchAddQuestionToBankRequest
+     */
+    void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest, HttpServletRequest request);
+
+    /**
+     * 批量从题库中删除题目
+     * @param batchRemoveQuestionToBankRequest
+     * @param request
+     */
+    void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request);
 }
