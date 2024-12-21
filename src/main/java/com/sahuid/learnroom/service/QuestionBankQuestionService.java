@@ -4,8 +4,10 @@ import com.sahuid.learnroom.model.dto.questionAndBank.BatchAddQuestionToBankRequ
 import com.sahuid.learnroom.model.dto.questionAndBank.BatchRemoveQuestionToBankRequest;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
 * @author Lenovo
@@ -19,6 +21,13 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * @param batchAddQuestionToBankRequest
      */
     void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest, HttpServletRequest request);
+
+    /**
+     * 批量将题目添加到题库 (避免大事务)
+     * @param questionBankQuestionList
+     */
+    @Transactional(rollbackFor = Exception.class)
+    void batchAddQuestion(List<QuestionBankQuestion> questionBankQuestionList);
 
     /**
      * 批量从题库中删除题目
