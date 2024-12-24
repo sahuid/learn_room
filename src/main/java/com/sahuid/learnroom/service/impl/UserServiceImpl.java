@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.constants.RedisConstant;
-import com.sahuid.learnroom.exception.DataBaseAbsentException;
-import com.sahuid.learnroom.exception.DataOperationException;
-import com.sahuid.learnroom.exception.DataPresentException;
-import com.sahuid.learnroom.exception.RequestParamException;
+import com.sahuid.learnroom.exception.*;
 import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
 import com.sahuid.learnroom.model.dto.user.UserQueryRequest;
 import com.sahuid.learnroom.model.dto.user.UserRegisterRequest;
@@ -126,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserVo getCurrentUser(HttpServletRequest request) {
         Object user = request.getSession().getAttribute("user");
         if(user == null) {
-            throw new RequestParamException("当前用户未登录");
+            throw new NoLoginException("当前用户未登录");
         }
         return (UserVo) user;
     }

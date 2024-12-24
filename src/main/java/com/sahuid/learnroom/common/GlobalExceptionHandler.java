@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoLoginException.class)
     public R<?> NoLoginException(NoLoginException e) {
         log.error("NoLoginException:" + e.getMessage());
-        return R.fail(403, e.getMessage());
+        return R.fail(401, e.getMessage());
     }
 
     @ExceptionHandler(DataPresentException.class)

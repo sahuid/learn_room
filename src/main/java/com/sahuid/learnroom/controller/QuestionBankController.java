@@ -33,6 +33,11 @@ public class QuestionBankController {
     }
 
 
+    /**
+     * 查询题库 并且可以选择是否显示题目
+     * @param queryQuestionBankOneRequest
+     * @return
+     */
     @GetMapping("/queryOne")
     public R<QuestionBankVo> queryQuestionBankById(QueryQuestionBankOneRequest queryQuestionBankOneRequest) {
         QuestionBankVo questionBank = questionBankService.queryBankById(queryQuestionBankOneRequest);
