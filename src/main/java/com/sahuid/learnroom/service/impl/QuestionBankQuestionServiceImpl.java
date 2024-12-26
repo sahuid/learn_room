@@ -8,6 +8,7 @@ import com.sahuid.learnroom.exception.NoLoginException;
 import com.sahuid.learnroom.exception.RequestParamException;
 import com.sahuid.learnroom.model.dto.questionAndBank.BatchAddQuestionToBankRequest;
 import com.sahuid.learnroom.model.dto.questionAndBank.BatchRemoveQuestionToBankRequest;
+import com.sahuid.learnroom.model.dto.questionbank.QuestionAndBankRequest;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
@@ -147,6 +148,11 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
         }
     }
 
+    /**
+     * 从题库中批量删除题目
+     * @param batchRemoveQuestionToBankRequest
+     * @param request
+     */
     @Override
     public void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request) {
         ThrowUtil.throwIf(batchRemoveQuestionToBankRequest == null, () -> new RequestParamException("请求参数错误"));
@@ -166,6 +172,56 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
             boolean remove = this.remove(wrapper);
             ThrowUtil.throwIf(!remove, () -> new DataOperationException("删除题目失败"));
         }
+    }
+
+    /**
+     * 从题库中添加题目
+     * @param questionAndBankRequest
+     * @param request
+     */
+    @Override
+    public void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
+        if (questionAndBankRequest == null) {
+            throw new RequestParamException("请求参数错误");
+        }
+        Long questId = questionAndBankRequest.getQuestId();
+        Long questionBankId = questionAndBankRequest.getQuestionBankId();
+        if (questId == null || questId <= 0 || questionBankId == null || questionBankId <= 0) {
+            throw new RequestParamException("请求参数错误");
+        }
+        Question question = questionService.getById(questId);
+        if (question == null) {
+            throw new DataBaseAbsentException("题目不存在");
+        }
+        QuestionBank questionBank = questionBankService.getById(questionBankId);
+        if (questionBank == null) {
+            throw new DataBaseAbsentException("题库不存在");
+        }
+        QuestionBankQuestion questionBankQuestion = new QuestionBankQuestion();
+        questionBankQuestion.setQuestionId(questId);
+        questionBankQuestion.setQuestionBandId(questionBankId);
+
+        UserVo currentUser = userService.getCurrentUser(request);
+        questionBankQuestion.setUserId(currentUser.getId());
+        boolean save = this.save(questionBankQuestion);
+
+        ThrowUtil.throwIf(!save, () -> new DataOperationException("保存题目到题库失败"));
+    }
+
+    /**
+     * 从题库中删除题目
+     * @param questionAndBankRequest
+     */
+    @Override
+    public void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest) {
+        ThrowUtil.throwIf(questionAndBankRequest == null, () -> new RequestParamException("请求参数错误"));
+        Long questId = questionAndBankRequest.getQuestId();
+        Long questionBankId = questionAndBankRequest.getQuestionBankId();
+        LambdaQueryWrapper<QuestionBankQuestion> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(QuestionBankQuestion::getQuestionId, questId);
+        wrapper.eq(QuestionBankQuestion::getQuestionBandId, questionBankId);
+        this.remove(wrapper);
+
     }
 }
 

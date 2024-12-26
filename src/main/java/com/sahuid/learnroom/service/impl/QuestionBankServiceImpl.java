@@ -167,45 +167,14 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, Que
         this.removeBatchByIds(ids);
     }
 
+
+    /**
+     * 不分页查询所有的题库列表
+     * @return
+     */
     @Override
-    public void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
-        if (questionAndBankRequest == null) {
-            throw new RequestParamException("请求参数错误");
-        }
-        Long questId = questionAndBankRequest.getQuestId();
-        Long questionBankId = questionAndBankRequest.getQuestionBankId();
-        if (questId == null || questId <= 0 || questionBankId == null || questionBankId <= 0) {
-            throw new RequestParamException("请求参数错误");
-        }
-        Question question = questionService.getById(questId);
-        if (question == null) {
-            throw new DataBaseAbsentException("题目不存在");
-        }
-        QuestionBank questionBank = this.getById(questionBankId);
-        if (questionBank == null) {
-            throw new DataBaseAbsentException("题库不存在");
-        }
-        QuestionBankQuestion questionBankQuestion = new QuestionBankQuestion();
-        questionBankQuestion.setQuestionId(questId);
-        questionBankQuestion.setQuestionBandId(questionBankId);
-
-        UserVo currentUser = userService.getCurrentUser(request);
-        questionBankQuestion.setUserId(currentUser.getId());
-        boolean save = questionBankQuestionService.save(questionBankQuestion);
-
-        ThrowUtil.throwIf(!save, () -> new DataOperationException("保存题目到题库失败"));
-    }
-
-    @Override
-    public void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest) {
-        ThrowUtil.throwIf(questionAndBankRequest == null, () -> new RequestParamException("请求参数错误"));
-        Long questId = questionAndBankRequest.getQuestId();
-        Long questionBankId = questionAndBankRequest.getQuestionBankId();
-        LambdaQueryWrapper<QuestionBankQuestion> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(QuestionBankQuestion::getQuestionId, questId);
-        wrapper.eq(QuestionBankQuestion::getQuestionBandId, questionBankId);
-        questionBankQuestionService.remove(wrapper);
-
+    public List<QuestionBank> queryBankList() {
+        return this.list();
     }
 }
 

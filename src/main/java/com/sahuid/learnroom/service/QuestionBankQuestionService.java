@@ -2,6 +2,7 @@ package com.sahuid.learnroom.service;
 
 import com.sahuid.learnroom.model.dto.questionAndBank.BatchAddQuestionToBankRequest;
 import com.sahuid.learnroom.model.dto.questionAndBank.BatchRemoveQuestionToBankRequest;
+import com.sahuid.learnroom.model.dto.questionbank.QuestionAndBankRequest;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,4 +36,17 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * @param request
      */
     void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request);
+
+    /**
+     * 从题库中添加题目
+     * @param questionAndBankRequest
+     * @param request
+     */
+    void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request);
+
+    /**
+     * 从题库中删除题目
+     * @param questionAndBankRequest
+     */
+    void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest);
 }

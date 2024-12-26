@@ -25,8 +25,9 @@ public interface QuestionBankService extends IService<QuestionBank> {
     Page<QuestionBank> queryQuestionBankByPage(QueryQuestionBankByPageRequest queryQuestionBankByPageRequest);
 
     void deleteQuestionBanks(List<Long> ids);
-
-    void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request);
-
-    void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest);
+    /**
+     * 不分页查询所有的题库列表
+     * @return
+     */
+    List<QuestionBank> queryBankList();
 }

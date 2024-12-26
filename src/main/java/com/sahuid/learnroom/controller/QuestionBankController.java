@@ -1,7 +1,9 @@
 package com.sahuid.learnroom.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.R;
+import com.sahuid.learnroom.constants.UserConstant;
 import com.sahuid.learnroom.model.dto.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.sahuid.learnroom.model.vo.QuestionBankVo;
@@ -56,15 +58,16 @@ public class QuestionBankController {
         return R.ok("删除成功");
     }
 
-    @PostMapping("/addQuestion")
-    public R<Void> addQuestionToBank(@RequestBody QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
-        questionBankService.addQuestionToBank(questionAndBankRequest, request);
-        return R.ok("添加成功");
-    }
 
-    @PostMapping("/deleteQuestion")
-    public R<Void> deleteQuestionFromBank(@RequestBody QuestionAndBankRequest questionAndBankRequest) {
-        questionBankService.deleteQuestionFromBank(questionAndBankRequest);
-        return R.ok("删除成功");
+
+    /**
+     * 不分页查询所有的图库信息
+     * @return
+     */
+    @GetMapping("/queryBankList")
+    @RoleCheck(mustRole = UserConstant.ADMIN_ROLE)
+    public R<List<QuestionBank>> queryBankList() {
+        List<QuestionBank> list = questionBankService.queryBankList();
+        return R.ok(list, "查询成功");
     }
 }
