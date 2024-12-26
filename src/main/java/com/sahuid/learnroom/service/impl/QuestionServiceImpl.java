@@ -3,17 +3,21 @@ package com.sahuid.learnroom.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
+import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.RequestParamException;
 import com.sahuid.learnroom.model.dto.question.AddQuestionRequest;
+import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
 import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.vo.UserVo;
 import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.mapper.QuestionMapper;
 import com.sahuid.learnroom.service.UserService;
+import com.sahuid.learnroom.utils.ThrowUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,10 +59,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         UserVo currentUser = userService.getCurrentUser(request);
         question.setUserId(currentUser.getId());
         boolean save = this.save(question);
-        // todo
-        if (!save) {
-
-        }
+        ThrowUtil.throwIf(!save, () -> new DataOperationException("添加失败"));
 
     }
 
@@ -105,6 +106,21 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             throw new DataBaseAbsentException("当前题目不存在");
         }
         return question;
+    }
+
+    /**
+     * 分页查询题目列表
+     * @param queryQuestionByPageRequest
+     * @return
+     */
+    @Override
+    public Page<Question> queryQuestionByPage(QueryQuestionByPageRequest queryQuestionByPageRequest) {
+        ThrowUtil.throwIf(queryQuestionByPageRequest == null, () -> new RequestParamException("请求参数错误"));
+        int currPage = queryQuestionByPageRequest.getPage();
+        int pageSize = queryQuestionByPageRequest.getPageSize();
+        Page<Question> page = new Page<>(currPage, pageSize);
+        Page<Question> questionPage = this.page(page);
+        return questionPage;
     }
 }
 

@@ -1,6 +1,8 @@
 package com.sahuid.learnroom.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.model.dto.question.AddQuestionRequest;
+import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
 import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
 import com.sahuid.learnroom.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,4 +21,11 @@ public interface QuestionService extends IService<Question> {
     void updateQuestion(UpdateQuestionRequest updateQuestionRequest);
 
     Question queryQuestionById(Long id);
+
+    /**
+     * 分页查询题目列表
+     * @param queryQuestionByPageRequest
+     * @return
+     */
+    Page<Question> queryQuestionByPage(QueryQuestionByPageRequest queryQuestionByPageRequest);
 }
