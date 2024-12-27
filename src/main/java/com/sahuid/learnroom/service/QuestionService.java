@@ -6,6 +6,7 @@ import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
 import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
 import com.sahuid.learnroom.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.sahuid.learnroom.model.vo.QuestionVo;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +21,7 @@ public interface QuestionService extends IService<Question> {
 
     void updateQuestion(UpdateQuestionRequest updateQuestionRequest);
 
-    Question queryQuestionById(Long id);
+    QuestionVo queryQuestionById(Long id, HttpServletRequest request);
 
     /**
      * 分页查询题目列表

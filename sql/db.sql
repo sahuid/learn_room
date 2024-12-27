@@ -54,3 +54,23 @@ CREATE TABLE `question_bank_question` (
                                           PRIMARY KEY (`id`),
                                           UNIQUE KEY `questionAndBankIndex` (`questionBandId`,`questionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 点赞记录表
+CREATE TABLE `likes` (
+                         `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                         `targetId` bigint NOT NULL COMMENT '点赞实体 id',
+                         `targetType` tinyint NOT NULL COMMENT '点赞实体类型: 0-题目',
+                         `userId` bigint NOT NULL COMMENT '用户id',
+                         `createTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                         `updateTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+                         PRIMARY KEY (`id`),
+                         UNIQUE KEY `targetType_targetId_userId` (`targetId`,`targetType`,`userId`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 点赞计数表
+CREATE TABLE `likes_count` (
+                               `targetId` bigint NOT NULL COMMENT '点赞实体id',
+                               `targetType` tinyint NOT NULL COMMENT '点赞实体类型:0-题目',
+                               `count` int DEFAULT '0' COMMENT '点赞数',
+                               UNIQUE KEY `targetId_targetType` (`targetId`,`targetType`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

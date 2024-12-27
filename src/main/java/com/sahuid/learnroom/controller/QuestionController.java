@@ -8,6 +8,7 @@ import com.sahuid.learnroom.model.dto.question.AddQuestionRequest;
 import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
 import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
 import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.model.vo.QuestionVo;
 import com.sahuid.learnroom.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +36,9 @@ public class QuestionController {
     }
 
     @GetMapping("/queryOne")
-    public R<Question> queryQuestion(@RequestParam("id") Long id){
-        Question question = questionService.queryQuestionById(id);
-        return R.ok(question, "查询成功");
+    public R<QuestionVo> queryQuestion(@RequestParam("id") Long id, HttpServletRequest request){
+        QuestionVo questionVo = questionService.queryQuestionById(id, request);
+        return R.ok(questionVo, "查询成功");
     }
 
     /**

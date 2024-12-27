@@ -13,7 +13,9 @@ import com.sahuid.learnroom.model.dto.question.AddQuestionRequest;
 import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
 import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
 import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.model.vo.QuestionVo;
 import com.sahuid.learnroom.model.vo.UserVo;
+import com.sahuid.learnroom.service.LikesService;
 import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.mapper.QuestionMapper;
 import com.sahuid.learnroom.service.UserService;
@@ -37,6 +39,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private LikesService likesService;
 
     @Override
     public void addQuestion(AddQuestionRequest addQuestionRequest, HttpServletRequest request) {
@@ -98,7 +103,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
-    public Question queryQuestionById(Long id) {
+    public QuestionVo queryQuestionById(Long id, HttpServletRequest request) {
         if (id == null || id <= 0) {
             throw new RequestParamException("请求参数错误");
         }
@@ -106,7 +111,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         if (question == null) {
             throw new DataBaseAbsentException("当前题目不存在");
         }
-        return question;
+        QuestionVo questionVo = new QuestionVo();
+        BeanUtil.copyProperties(question, questionVo, false);
+
+        return questionVo;
     }
 
     /**
