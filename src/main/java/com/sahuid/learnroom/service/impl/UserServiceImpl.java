@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,10 +39,10 @@ import java.util.List;
 * @createDate 2024-12-11 11:35:19
 */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    private final RedissonClient redissonClient;
+    @Resource
+    private RedissonClient redissonClient;
 
     @Override
     public UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {

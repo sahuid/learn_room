@@ -12,15 +12,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequestMapping("/questionBank")
 @RestController
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionBankController {
 
-    private final QuestionBankService questionBankService;
+    @Resource
+    private QuestionBankService questionBankService;
 
     @PostMapping("/add")
     public R<Void> addQuestionBank(@RequestBody AddQuestionBankRequest addQuestionBankRequest, HttpServletRequest request) {

@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
@@ -31,11 +32,11 @@ import java.util.List;
 * @createDate 2024-12-12 12:08:39
 */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService{
 
-    private final UserService userService;
+    @Resource
+    private UserService userService;
 
     @Override
     public void addQuestion(AddQuestionRequest addQuestionRequest, HttpServletRequest request) {

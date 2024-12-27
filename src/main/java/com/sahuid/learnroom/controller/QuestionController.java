@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("/question")
 @RestController
-
 public class QuestionController {
 
     @Resource
