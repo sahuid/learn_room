@@ -25,6 +25,7 @@ CREATE TABLE `question` (
                             `userId` bigint NOT NULL COMMENT '创建人id',
                             `answer` text NOT NULL COMMENT '推荐答案',
                             `tags` varchar(1024) DEFAULT NULL COMMENT '标签(json 数组)',
+                            `viewCount` int NOT NULL DEFAULT '0' COMMENT '浏览量',
                             `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                             `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
                             `isDelete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除',
@@ -74,3 +75,14 @@ CREATE TABLE `likes_count` (
                                `count` int DEFAULT '0' COMMENT '点赞数',
                                UNIQUE KEY `targetId_targetType` (`targetId`,`targetType`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 浏览记录
+CREATE TABLE `question_view` (
+                                 `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                 `questionId` bigint NOT NULL COMMENT '题目id',
+                                 `userId` bigint NOT NULL COMMENT '用户id',
+                                 `viewTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '浏览时间',
+                                 `viewCount` int DEFAULT '1' COMMENT '浏览次数',
+                                 PRIMARY KEY (`id`),
+                                 UNIQUE KEY `userId_targetId` (`userId`,`questionId`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1873242391907950594 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

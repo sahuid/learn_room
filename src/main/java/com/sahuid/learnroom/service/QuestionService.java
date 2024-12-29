@@ -1,11 +1,11 @@
 package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sahuid.learnroom.model.dto.question.AddQuestionRequest;
-import com.sahuid.learnroom.model.dto.question.QueryQuestionByPageRequest;
-import com.sahuid.learnroom.model.dto.question.UpdateQuestionRequest;
+import com.sahuid.learnroom.common.PageResult;
+import com.sahuid.learnroom.model.dto.question.*;
 import com.sahuid.learnroom.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.model.vo.QuestionVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,4 +29,17 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     Page<Question> queryQuestionByPage(QueryQuestionByPageRequest queryQuestionByPageRequest);
+
+    /**
+     * 增加浏览量和浏览记录
+     * @param increaseQuestionViewCountRequest
+     */
+    void increaseQuestionViewCount(IncreaseQuestionViewCountRequest increaseQuestionViewCountRequest);
+
+    /**
+     * 查询题目的浏览记录
+     * @param queryQuestionViewHistoryRequest
+     * @return
+     */
+    PageResult<QuestionViewHistoryVo> getQuestionViewHistory(QueryQuestionViewHistoryRequest queryQuestionViewHistoryRequest);
 }

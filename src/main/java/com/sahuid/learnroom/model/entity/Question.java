@@ -45,6 +45,11 @@ public class Question implements Serializable {
     private String tags;
 
     /**
+     * 浏览量
+     */
+    private Integer viewCount;
+
+    /**
      * 创建时间
      */
     private Date createTime;

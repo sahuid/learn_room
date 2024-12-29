@@ -3,10 +3,10 @@ package com.sahuid.learnroom.model.vo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
-public class QuestionVo implements Serializable {
-
+public class QuestionViewHistoryVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -20,33 +20,17 @@ public class QuestionVo implements Serializable {
     private String title;
 
     /**
-     * 题目内容
-     */
-    private String context;
-
-    /**
-     * 创建人id
-     */
-    private Long userId;
-
-    /**
-     * 推荐答案
-     */
-    private String answer;
-
-    /**
      * 标签(json 数组)
      */
     private String tags;
 
     /**
-     * 浏览量
+     * 浏览时间
      */
-    private Integer viewCount;
+    private Date viewTime;
 
     /**
      * 浏览次数
      */
-    private Integer viewCOunt;
-
+    private Integer viewCount;
 }
