@@ -24,7 +24,7 @@ public class QuestionCollect implements Serializable {
     /**
      * 题目id
      */
-    private Long quesitonId;
+    private Long questionId;
 
     /**
      * 用户id

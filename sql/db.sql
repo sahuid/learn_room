@@ -86,3 +86,20 @@ CREATE TABLE `question_view` (
                                  PRIMARY KEY (`id`),
                                  UNIQUE KEY `userId_targetId` (`userId`,`questionId`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=1873242391907950594 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 收藏计数表
+CREATE TABLE `collect_count` (
+                                 `questionId` bigint NOT NULL COMMENT '题目id',
+                                 `collectCount` int NOT NULL DEFAULT '0' COMMENT '收藏数',
+                                 PRIMARY KEY (`questionId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 收藏记录表
+CREATE TABLE `question_collect` (
+                                    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                    `questionId` bigint NOT NULL COMMENT '题目id',
+                                    `userId` bigint NOT NULL COMMENT '用户id',
+                                    `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                    `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+                                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

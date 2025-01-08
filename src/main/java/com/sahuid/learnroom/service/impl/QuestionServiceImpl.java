@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -191,6 +192,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         questionViewService.page(page, viewLambdaQueryWrapper);
         // 查询题目
         List<QuestionView> records = page.getRecords();
+        // 非空判断
+        PageResult<QuestionViewHistoryVo> pageResult = new PageResult<>();
+        if (records.isEmpty()) {
+            pageResult.setData(Collections.emptyList());
+            pageResult.setTotal(0L);
+            return pageResult;
+        }
         List<Long> questionIds = records.stream().map(QuestionView::getQuestionId).collect(Collectors.toList());
         LambdaQueryWrapper<Question> wrapper = new LambdaQueryWrapper<>();
         // 确保顺序
@@ -207,7 +215,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
             questionViewHistoryVo.setViewCount(questionView.getViewCount());
             return questionViewHistoryVo;
         }).collect(Collectors.toList());
-        PageResult<QuestionViewHistoryVo> pageResult = new PageResult<>();
         pageResult.setData(resultList);
         pageResult.setTotal(page.getTotal());
         return pageResult;

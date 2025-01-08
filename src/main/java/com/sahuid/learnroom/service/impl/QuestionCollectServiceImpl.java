@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +56,7 @@ public class QuestionCollectServiceImpl extends ServiceImpl<QuestionCollectMappe
                 () -> new RequestParamException("请求参数错误"));
         // 添加收藏记录
         QuestionCollect questionCollect = new QuestionCollect();
-        questionCollect.setQuesitonId(questionId);
+        questionCollect.setQuestionId(questionId);
         questionCollect.setUserId(userId);
         boolean save = this.save(questionCollect);
         ThrowUtil.throwIf(!save, () -> new DataOperationException("收藏失败"));
@@ -99,7 +100,7 @@ public class QuestionCollectServiceImpl extends ServiceImpl<QuestionCollectMappe
         // 判断是否存在记录
         LambdaQueryWrapper<QuestionCollect> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(QuestionCollect::getUserId, userId);
-        wrapper.eq(QuestionCollect::getQuesitonId, questionId);
+        wrapper.eq(QuestionCollect::getQuestionId, questionId);
         QuestionCollect questionCollect = this.getOne(wrapper);
         return questionCollect != null;
     }
@@ -115,7 +116,7 @@ public class QuestionCollectServiceImpl extends ServiceImpl<QuestionCollectMappe
         // 删除记录
         LambdaQueryWrapper<QuestionCollect> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(QuestionCollect::getUserId, userId);
-        wrapper.eq(QuestionCollect::getQuesitonId, questionId);
+        wrapper.eq(QuestionCollect::getQuestionId, questionId);
         boolean remove = this.remove(wrapper);
         ThrowUtil.throwIf(!remove, () -> new DataOperationException("取消失败"));
         // 计数减少 1
@@ -141,9 +142,16 @@ public class QuestionCollectServiceImpl extends ServiceImpl<QuestionCollectMappe
         wrapper.orderBy(true, false, QuestionCollect::getCreateTime);
         this.page(page, wrapper);
         List<QuestionCollect> records = page.getRecords();
+        // 非空判断
+        PageResult<QuestionViewHistoryVo> pageResult = new PageResult<>();
+        if (records.isEmpty()) {
+            pageResult.setData(Collections.emptyList());
+            pageResult.setTotal(0L);
+            return pageResult;
+        }
         // 查询题目信息
-        Map<Long, QuestionCollect> questionIdAndLogMap = records.stream().collect(Collectors.toMap(QuestionCollect::getQuesitonId, questionCollect -> questionCollect));
-        List<Long> questionIds = records.stream().map(QuestionCollect::getQuesitonId).collect(Collectors.toList());
+        Map<Long, QuestionCollect> questionIdAndLogMap = records.stream().collect(Collectors.toMap(QuestionCollect::getQuestionId, questionCollect -> questionCollect));
+        List<Long> questionIds = records.stream().map(QuestionCollect::getQuestionId).collect(Collectors.toList());
         LambdaQueryWrapper<Question> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Question::getId, questionIds);
         queryWrapper.last("ORDER BY FIELD (id," + StrUtil.join(",", questionIds) + ")");
@@ -156,7 +164,6 @@ public class QuestionCollectServiceImpl extends ServiceImpl<QuestionCollectMappe
             questionViewHistoryVo.setViewTime(questionCollect.getCreateTime());
             return questionViewHistoryVo;
         }).collect(Collectors.toList());
-        PageResult<QuestionViewHistoryVo> pageResult = new PageResult<>();
         pageResult.setTotal(page.getTotal());
         pageResult.setData(result);
         return pageResult;

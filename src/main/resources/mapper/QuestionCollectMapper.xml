@@ -6,14 +6,14 @@
 
     <resultMap id="BaseResultMap" type="com.sahuid.learnroom.model.entity.QuestionCollect">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="quesitonId" column="quesitonId" jdbcType="BIGINT"/>
+            <result property="questionId" column="questionId" jdbcType="BIGINT"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,quesitonId,userId,
+        id,questionId,userId,
         createTime,updateTime
     </sql>
 </mapper>
