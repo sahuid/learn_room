@@ -103,3 +103,17 @@ CREATE TABLE `question_collect` (
                                     `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
                                     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+# 评论表
+CREATE TABLE `comment` (
+                           `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                           `content` text NOT NULL COMMENT '内容',
+                           `userId` bigint NOT NULL COMMENT '用户id',
+                           `targetId` bigint NOT NULL COMMENT '目标id',
+                           `parentId` bigint DEFAULT NULL COMMENT '父评论Id',
+                           `rootId` bigint DEFAULT NULL COMMENT '根评论Id',
+                           `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                           `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+                           `isDelete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除',
+                           PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
