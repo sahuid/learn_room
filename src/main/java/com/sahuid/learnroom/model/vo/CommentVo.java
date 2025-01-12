@@ -30,6 +30,11 @@ public class CommentVo {
     private Long targetId;
 
     /**
+     * 根评论id
+     */
+    private Long rootId;
+
+    /**
      * 用户姓名
      */
     private String userName;
@@ -48,4 +53,9 @@ public class CommentVo {
      * 子评论
      */
     List<CommentVo> subComment;
+
+    /**
+     * 回复数
+     */
+    private Long replyCount;
 }

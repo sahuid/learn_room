@@ -1,7 +1,9 @@
 package com.sahuid.learnroom.controller;
 
+import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.PageResult;
 import com.sahuid.learnroom.common.R;
+import com.sahuid.learnroom.constants.UserConstant;
 import com.sahuid.learnroom.model.dto.comment.PublishCommentRequest;
 import com.sahuid.learnroom.model.dto.comment.QueryCommentByPageRequest;
 import com.sahuid.learnroom.model.vo.CommentVo;
@@ -9,6 +11,8 @@ import com.sahuid.learnroom.service.CommentService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @Author: mcj
@@ -28,8 +32,20 @@ public class CommentController {
     }
 
     @GetMapping("/queryByPage")
-    public R<PageResult<CommentVo>> queryCommentByPage(QueryCommentByPageRequest queryCommentByPageRequest) {
-        PageResult<CommentVo> result = commentService.queryCommentByPage(queryCommentByPageRequest);
+    public R<PageResult<CommentVo>> queryRootCommentByPage(QueryCommentByPageRequest queryCommentByPageRequest) {
+        PageResult<CommentVo> result = commentService.queryRootCommentByPage(queryCommentByPageRequest);
         return R.ok(result);
+    }
+
+    @GetMapping("/queryReplyComment")
+    public R<List<CommentVo>> queryReplyComment(Long commentId) {
+        List<CommentVo> list = commentService.queryReplyComment(commentId);
+        return R.ok(list);
+    }
+
+    @GetMapping("/delete")
+    public R<Void> deleteComment(Long commentId, HttpServletRequest request) {
+        commentService.deleteComment(commentId, request);
+        return R.ok();
     }
 }
