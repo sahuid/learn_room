@@ -1,7 +1,11 @@
 package com.sahuid.learnroom.model.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum LikeTargetTypeEnums {
-    QUESTION_TYPE(0, "题目");
+    QUESTION_TYPE(0, "题目"),
+    COMMENT_TYPE(1, "评论")
     ;
 
 
@@ -23,16 +27,8 @@ public enum LikeTargetTypeEnums {
         return null;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public String getDes() {
-        return des;
     }
 
     public void setDes(String des) {
