@@ -1,6 +1,7 @@
 package com.sahuid.learnroom.ai;
 
 import com.alibaba.dashscope.aigc.generation.*;
+import com.alibaba.dashscope.common.History;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.ApiException;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author: mcj
@@ -39,12 +41,16 @@ public class AiManager {
                 .build();
     }
 
-    private GenerationParam assembleGenerationParam(String question) {
+    private GenerationParam assembleGenerationParam(String question, List<Message> msgManager) {
         Message userMessage = sendQuestion(question);
+        if(msgManager.isEmpty()) {
+            msgManager.add(systemMessage);
+        }
+        msgManager.add(userMessage);
         return GenerationParam.builder()
                 .apiKey(appKey)
                 .model(Generation.Models.QWEN_PLUS)
-                .messages(Arrays.asList(systemMessage, userMessage))
+                .messages(msgManager)
                 .resultFormat(GenerationParam.ResultFormat.MESSAGE)
                 .temperature(1F)
                 .incrementalOutput(true)
@@ -55,21 +61,21 @@ public class AiManager {
     /**
      * 一次性回复问题
      *
-     * @param question
+     * @param
      * @return
      */
-    public String directAiTalk(String question) {
-        GenerationParam generationParam = assembleGenerationParam(question);
-        GenerationResult result = null;
-        try {
-            result = generation.call(generationParam);
-        } catch (ApiException | NoApiKeyException | InputRequiredException e) {
-            // 使用日志框架记录异常信息
-            log.error("An error occurred while calling the generation service: {}", e.getMessage());
-            throw new RuntimeException("ai 功能出错");
-        }
-        return resolveResult(result);
-    }
+//    public String directAiTalk(String question) {
+//        GenerationParam generationParam = assembleGenerationParam(question);
+//        GenerationResult result = null;
+//        try {
+//            result = generation.call(generationParam);
+//        } catch (ApiException | NoApiKeyException | InputRequiredException e) {
+//            // 使用日志框架记录异常信息
+//            log.error("An error occurred while calling the generation service: {}", e.getMessage());
+//            throw new RuntimeException("ai 功能出错");
+//        }
+//        return resolveResult(result);
+//    }
 
     public String resolveResult(GenerationResult result) {
         // 其他数据
@@ -83,8 +89,8 @@ public class AiManager {
         return output.getChoices().get(0).getMessage().getContent();
     }
 
-    public Flowable<GenerationResult> streamAiTalk(String question) throws NoApiKeyException, InputRequiredException {
-        GenerationParam generationParam = assembleGenerationParam(question);
+    public Flowable<GenerationResult> streamAiTalk(String question, List<Message> msgManager) throws NoApiKeyException, InputRequiredException {
+        GenerationParam generationParam = assembleGenerationParam(question, msgManager);
         return generation.streamCall(generationParam);
 
     }
