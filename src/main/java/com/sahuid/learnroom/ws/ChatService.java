@@ -8,7 +8,9 @@ import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.sahuid.learnroom.ai.AiManager;
 import com.sahuid.learnroom.config.GetHttpSessionConfig;
+import com.sahuid.learnroom.model.enums.MessageRoleEnums;
 import com.sahuid.learnroom.model.vo.UserVo;
+import com.sahuid.learnroom.service.MessageHistoryService;
 import com.sahuid.learnroom.service.UserService;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -35,14 +37,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Slf4j
 @CrossOrigin(origins = "*")
-public class ChatEndpoint{
+public class ChatService {
 
     private static ApplicationContext applicationContext;
 
-    /**
-     * 管理在线用户和连接session的map
-     */
-    private static final Map<Long, Session> ONLINE_USER_SESSION_MAP = new ConcurrentHashMap<>();
     /**
      * 用户聊天记录 map
      */
@@ -50,6 +48,8 @@ public class ChatEndpoint{
 
     private volatile static AiManager aiManager ;
     private volatile static UserService userService;
+
+    private volatile static MessageHistoryService messageHistoryService;
 
     /**
      * 用户 id 作为唯一标识
@@ -59,7 +59,7 @@ public class ChatEndpoint{
     /**
      * 最大上下文长度
      */
-    private static final Integer MAX_CONTENT_LENGTH = 2;
+    private static final Integer MAX_CONTENT_LENGTH = 1000;
 
     /**
      * websocket 消息结束标识
@@ -71,7 +71,7 @@ public class ChatEndpoint{
      * @param applicationContext
      */
     public static void setApplicationContext(ApplicationContext applicationContext){
-        ChatEndpoint.applicationContext = applicationContext;
+        ChatService.applicationContext = applicationContext;
     }
 
 
@@ -88,7 +88,6 @@ public class ChatEndpoint{
         // 保存连接关系
         UserVo user = (UserVo) httpSession.getAttribute("user");
         this.userId = user.getId();
-        ONLINE_USER_SESSION_MAP.put(userId, session);
         log.info("websocket 建立链接成功, userId: {}", userId);
 
     }
@@ -100,7 +99,6 @@ public class ChatEndpoint{
      */
     @OnClose
     public void onClose(Session session) {
-        ONLINE_USER_SESSION_MAP.remove(userId);
         log.info("websocket 链接关闭，userId：{}", userId);
     }
 
@@ -113,13 +111,15 @@ public class ChatEndpoint{
     @OnMessage
     public void onMessage(Session session, String message) {
         log.info("ai 接受到消息，userId:{}, 内容：{}", userId, message);
-        // 获取历史记录
+        // 获取上下文记录
         List<Message> msgManager = USER_MESSAGE_HISTORY.computeIfAbsent(userId, k -> new ArrayList<>());
         // 限制最大上下文内容
         if (msgManager.size() > MAX_CONTENT_LENGTH) {
             sendText(session, "超过最大上下文内容，请清理内容" + COMPLETE_FLAG);
             return;
         }
+        // 保存用户提问记录
+        messageHistoryService.addMessageHistory(userId, message, MessageRoleEnums.USER);
         // 获取消息
         Flowable<GenerationResult> resultFlowable;
         try {
@@ -130,7 +130,7 @@ public class ChatEndpoint{
             sendError(session, e);
             return;
         }
-        // 保存回复记录
+        // 记录回复信息
         StringBuilder stringBuilder = new StringBuilder();
         // 启动流式处理
         resultFlowable
@@ -158,6 +158,12 @@ public class ChatEndpoint{
         }
     }
 
+    /**
+     * 发送消息代码块
+     * @param session
+     * @param result
+     * @param stringBuilder
+     */
     private void sendChunk(Session session, GenerationResult result, StringBuilder stringBuilder) {
         try {
             if (session.isOpen()) {
@@ -189,12 +195,15 @@ public class ChatEndpoint{
         } catch (IOException e) {
             log.error("WebSocket 发送完成消息失败: {}", e.getMessage());
         }
+        // ai 回复消息
         Message replayMessage = Message.builder()
                 .role(Role.ASSISTANT.getValue())
                 .content(stringBuilder.toString())
                 .build();
         List<Message> msgManager = USER_MESSAGE_HISTORY.get(userId);
         msgManager.add(replayMessage);
+        // 保存 ai 回复消息记录
+        messageHistoryService.addMessageHistory(userId, stringBuilder.toString(), MessageRoleEnums.AI);
     }
 
     /**
@@ -204,30 +213,35 @@ public class ChatEndpoint{
     @OnError
     public void onError(Session session, Throwable throwable) {
         log.info("websocket 链接出现问题，错误原因:{}", throwable.getMessage());
-        ONLINE_USER_SESSION_MAP.remove(userId);
     }
 
     /**
      * 初始化 spring bean
      */
     private void initSpringBean() {
-        if(aiManager != null && userService != null) {
+        if(aiManager != null && userService != null && messageHistoryService != null) {
             return;
         }
-        if(aiManager == null) {
-            synchronized (ChatEndpoint.class) {
+        if(aiManager == null || userService == null || messageHistoryService == null) {
+            synchronized (ChatService.class) {
                 if (aiManager == null) {
                     aiManager = applicationContext.getBean(AiManager.class);
                 }
-            }
-        }
-        if(userService == null) {
-            synchronized (ChatEndpoint.class) {
                 if (userService == null) {
                     userService = applicationContext.getBean(UserService.class);
+                }
+                if(messageHistoryService == null) {
+                    messageHistoryService = applicationContext.getBean(MessageHistoryService.class);
                 }
             }
         }
     }
 
+    /**
+     * 删除指定用户的上下文内容
+     * @param userId
+     */
+    public static void clearChatMessage(Long userId) {
+        USER_MESSAGE_HISTORY.remove(userId);
+    }
 }

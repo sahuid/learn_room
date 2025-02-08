@@ -1,6 +1,6 @@
 package com.sahuid.learnroom;
 
-import com.sahuid.learnroom.ws.ChatEndpoint;
+import com.sahuid.learnroom.ws.ChatService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ public class LearnRoomApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext configurableApplicationContext = SpringApplication.run(LearnRoomApplication.class, args);
         // 给 websocket 容器注入 applicationContext
-        ChatEndpoint.setApplicationContext(configurableApplicationContext);
+        ChatService.setApplicationContext(configurableApplicationContext);
     }
 
 }

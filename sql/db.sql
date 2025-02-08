@@ -117,3 +117,14 @@ CREATE TABLE `comment` (
                            `isDelete` tinyint NOT NULL DEFAULT '0' COMMENT '逻辑删除',
                            PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+# 聊天记录表
+CREATE TABLE `message_history` (
+                                   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
+                                   `userId` bigint NOT NULL COMMENT '用户id',
+                                   `content` varchar(2048) NOT NULL COMMENT '聊天内容',
+                                   `role` tinyint NOT NULL COMMENT '角色- 0：ai，1：用户',
+                                   `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                   PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
