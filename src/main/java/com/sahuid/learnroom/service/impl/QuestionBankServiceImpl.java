@@ -50,7 +50,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, Que
     private QuestionBankQuestionService questionBankQuestionService;
 
     @Override
-    public void addQuestionBank(AddQuestionBankRequest addQuestionBankRequest, HttpServletRequest request) {
+    public void addQuestionBank(AddQuestionBankRequest addQuestionBankRequest) {
         if (addQuestionBankRequest == null) {
             throw new RequestParamException("请求参数不能为空");
         }
@@ -61,7 +61,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, Que
         QuestionBank questionBand = new QuestionBank();
         BeanUtil.copyProperties(addQuestionBankRequest, questionBand, false);
 
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         Long userId = currentUser.getId();
 
         questionBand.setUserId(userId);
@@ -71,7 +71,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, Que
     }
 
     @Override
-    public void updateQuestionBank(UpdateQuestionBankRequest updateQuestionBankRequest, HttpServletRequest request) {
+    public void updateQuestionBank(UpdateQuestionBankRequest updateQuestionBankRequest) {
         if (updateQuestionBankRequest == null) {
             throw new RequestParamException("请求参数不能为空");
         }

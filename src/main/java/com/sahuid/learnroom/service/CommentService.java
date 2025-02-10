@@ -42,5 +42,5 @@ public interface CommentService extends IService<Comment> {
      * 删除评论
      * @param commentId
      */
-    void deleteComment(Long commentId, HttpServletRequest request);
+    void deleteComment(Long commentId);
 }

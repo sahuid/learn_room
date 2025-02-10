@@ -24,14 +24,14 @@ public class QuestionBankController {
     private QuestionBankService questionBankService;
 
     @PostMapping("/add")
-    public R<Void> addQuestionBank(@RequestBody AddQuestionBankRequest addQuestionBankRequest, HttpServletRequest request) {
-        questionBankService.addQuestionBank(addQuestionBankRequest, request);
+    public R<Void> addQuestionBank(@RequestBody AddQuestionBankRequest addQuestionBankRequest) {
+        questionBankService.addQuestionBank(addQuestionBankRequest);
         return R.ok("添加成功");
     }
 
     @PostMapping("/update")
-    public R<Void> updateQuestionBank(@RequestBody UpdateQuestionBankRequest updateQuestionBankRequest, HttpServletRequest request) {
-        questionBankService.updateQuestionBank(updateQuestionBankRequest, request);
+    public R<Void> updateQuestionBank(@RequestBody UpdateQuestionBankRequest updateQuestionBankRequest) {
+        questionBankService.updateQuestionBank(updateQuestionBankRequest);
         return R.ok("修改成功");
     }
 

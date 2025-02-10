@@ -17,11 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 */
 public interface QuestionService extends IService<Question> {
 
-    void addQuestion(AddQuestionRequest addQuestionRequest, HttpServletRequest request);
+    void addQuestion(AddQuestionRequest addQuestionRequest);
 
     void updateQuestion(UpdateQuestionRequest updateQuestionRequest);
 
-    QuestionVo queryQuestionById(Long id, HttpServletRequest request);
+    QuestionVo queryQuestionById(Long id);
 
     /**
      * 分页查询题目列表

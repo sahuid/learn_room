@@ -56,7 +56,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     private QuestionViewService questionViewService;
 
     @Override
-    public void addQuestion(AddQuestionRequest addQuestionRequest, HttpServletRequest request) {
+    public void addQuestion(AddQuestionRequest addQuestionRequest) {
         if (addQuestionRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -74,7 +74,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         String tagsStr = JSONUtil.parseArray(JSONUtil.toJsonStr(tags)).toString();
         question.setTags(tagsStr);
 
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         question.setUserId(currentUser.getId());
         boolean save = this.save(question);
         ThrowUtil.throwIf(!save, () -> new DataOperationException("添加失败"));
@@ -115,7 +115,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     }
 
     @Override
-    public QuestionVo queryQuestionById(Long id, HttpServletRequest request) {
+    public QuestionVo queryQuestionById(Long id) {
         if (id == null || id <= 0) {
             throw new RequestParamException("请求参数错误");
         }

@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.service;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
@@ -20,17 +21,22 @@ import java.util.List;
 */
 public interface UserService extends IService<User> {
 
-    UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request);
+    /**
+     * 用户登录
+     * @param userLoginRequest
+     * @return
+     */
+    SaTokenInfo userLogin(UserLoginRequest userLoginRequest);
 
     void userRegister(UserRegisterRequest userRegisterRequest);
 
     void userUpdate(UserUpdateRequest userUpdateRequest);
 
-    UserVo getCurrentUser(HttpServletRequest request);
+    UserVo getCurrentUser();
 
     Page<User> queryUserByPage(UserQueryRequest userQueryRequest);
 
-    void userSign(HttpServletRequest request);
+    void userSign();
 
-    List<Integer> getUserSignData(Integer year, HttpServletRequest request);
+    List<Integer> getUserSignData(Integer year);
 }

@@ -1,5 +1,7 @@
 package com.sahuid.learnroom.service.impl;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
+
 /**
 * @author Lenovo
 * @description 针对表【user】的数据库操作Service实现
@@ -45,49 +49,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private RedissonClient redissonClient;
 
     @Override
-    public UserVo userLogin(UserLoginRequest userLoginRequest, HttpServletRequest request) {
-        if (userLoginRequest == null) {
-            throw new RequestParamException("请求参数错误");
-        }
+    public SaTokenInfo userLogin(UserLoginRequest userLoginRequest) {
+        ThrowUtil.throwIf(userLoginRequest == null,
+                () -> new RequestParamException("请输入账号和密码"));
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
 
         if (StrUtil.isBlank(userAccount) || StrUtil.isBlank(userPassword)) {
-            throw new RequestParamException("请求参数错误");
+            throw new RequestParamException("请输入账号和密码");
         }
+        // 对密码进行加密
         String md5Password = DigestUtils.md5DigestAsHex(userPassword.getBytes());
-
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUserAccount, userAccount);
         wrapper.eq(User::getUserPassword, md5Password);
         User user = this.getOne(wrapper);
-
         if (user == null) {
-            throw new DataBaseAbsentException("数据不存在");
+            throw new DataBaseAbsentException("用户不存在，请先注册");
         }
-        UserVo userVo = UserVo.userToVo(user);
-        request.getSession().setAttribute("user", userVo);
-        return userVo;
+        StpUtil.login(user.getId());
+        return StpUtil.getTokenInfo();
 
     }
 
     @Override
     public void userRegister(UserRegisterRequest userRegisterRequest) {
-        if (userRegisterRequest == null) {
-            throw new RequestParamException("请求参数错误");
-        }
+        ThrowUtil.throwIf(userRegisterRequest == null,
+                () -> new RequestParamException("请输入账号和密码"));
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         if (StrUtil.isBlank(userAccount) || StrUtil.isBlank(userPassword)) {
-            throw new RequestParamException("请求参数错误");
+            throw new RequestParamException("请输入账号和密码");
         }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(User::getUserAccount, userAccount);
         User user = this.getOne(wrapper);
         if (user != null) {
-            throw new DataPresentException("数据已经存在");
+            throw new DataPresentException("用户已存在");
         }
-
         String md5Password = DigestUtils.md5DigestAsHex(userPassword.getBytes());
         UUID uuid = UUID.randomUUID(false);
         String userName = "用户" + uuid.toString();
@@ -109,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         User user = this.getById(userId);
         if (user == null) {
-            throw new DataBaseAbsentException("数据不存在");
+            throw new DataBaseAbsentException("用户不存在");
         }
 
         String userName = userUpdateRequest.getUserName();
@@ -121,12 +120,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public UserVo getCurrentUser(HttpServletRequest request) {
-        Object user = request.getSession().getAttribute("user");
-        if(user == null) {
-            throw new NoLoginException("当前用户未登录");
-        }
-        return (UserVo) user;
+    public UserVo getCurrentUser() {
+        Long userId = Long.valueOf((String) StpUtil.getLoginId());
+        User user = this.getById(userId);
+        return UserVo.userToVo(user);
     }
 
     @Override
@@ -142,8 +139,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void userSign(HttpServletRequest request) {
-        UserVo currentUser = this.getCurrentUser(request);
+    public void userSign() {
+        UserVo currentUser = this.getCurrentUser();
         Long userId = currentUser.getId();
         LocalDate date = LocalDate.now();
         int year = date.getYear();
@@ -159,12 +156,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public List<Integer> getUserSignData(Integer year, HttpServletRequest request) {
+    public List<Integer> getUserSignData(Integer year) {
         if (year == null) {
             LocalDate now = LocalDate.now();
             year = now.getYear();
         }
-        UserVo currentUser = this.getCurrentUser(request);
+        UserVo currentUser = this.getCurrentUser();
         Long userId = currentUser.getId();
 
         String key = RedisConstant.getUserSignKey(year, userId);

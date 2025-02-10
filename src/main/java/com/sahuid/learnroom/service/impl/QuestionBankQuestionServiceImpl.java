@@ -61,7 +61,7 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     private QuestionBankService questionBankService;
 
     @Override
-    public void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest, HttpServletRequest request) {
+    public void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest) {
         ThrowUtil.throwIf(batchAddQuestionToBankRequest == null, () -> new RequestParamException("请求参数错误"));
         Long questionBankId = batchAddQuestionToBankRequest.getQuestionBankId();
         List<Long> questionIds = batchAddQuestionToBankRequest.getQuestionIds();
@@ -69,7 +69,7 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
         ThrowUtil.throwIf(questionBankId == null || questionBankId <= 0, () -> new RequestParamException("题库不存在"));
         ThrowUtil.throwIf(questionIds.isEmpty(), () -> new RequestParamException("未选择题库"));
         // 校验用户
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         ThrowUtil.throwIf(currentUser == null, () -> new NoLoginException("当前未登录"));
         Long userId = currentUser.getId();
         // 查询是否存在这些题目
@@ -151,10 +151,9 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     /**
      * 从题库中批量删除题目
      * @param batchRemoveQuestionToBankRequest
-     * @param request
      */
     @Override
-    public void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request) {
+    public void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest) {
         ThrowUtil.throwIf(batchRemoveQuestionToBankRequest == null, () -> new RequestParamException("请求参数错误"));
         Long questionBankId = batchRemoveQuestionToBankRequest.getQuestionBankId();
         List<Long> questionIds = batchRemoveQuestionToBankRequest.getQuestionIds();
@@ -162,7 +161,7 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
         ThrowUtil.throwIf(questionBankId == null || questionBankId <= 0, () -> new RequestParamException("题库不存在"));
         ThrowUtil.throwIf(questionIds.isEmpty(), () -> new RequestParamException("未选择题库"));
         // 校验用户
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         ThrowUtil.throwIf(currentUser == null, () -> new NoLoginException("当前未登录"));
         // 删除题库
         for (Long questionId : questionIds) {
@@ -177,10 +176,9 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     /**
      * 从题库中添加题目
      * @param questionAndBankRequest
-     * @param request
      */
     @Override
-    public void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
+    public void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest) {
         if (questionAndBankRequest == null) {
             throw new RequestParamException("请求参数错误");
         }
@@ -201,7 +199,7 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
         questionBankQuestion.setQuestionId(questId);
         questionBankQuestion.setQuestionBandId(questionBankId);
 
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         questionBankQuestion.setUserId(currentUser.getId());
         boolean save = this.save(questionBankQuestion);
 

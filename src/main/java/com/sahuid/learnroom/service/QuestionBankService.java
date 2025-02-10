@@ -16,9 +16,9 @@ import java.util.List;
 */
 public interface QuestionBankService extends IService<QuestionBank> {
 
-    void addQuestionBank(AddQuestionBankRequest addQuestionBankRequest, HttpServletRequest request);
+    void addQuestionBank(AddQuestionBankRequest addQuestionBankRequest);
 
-    void updateQuestionBank(UpdateQuestionBankRequest updateQuestionBankRequest, HttpServletRequest request);
+    void updateQuestionBank(UpdateQuestionBankRequest updateQuestionBankRequest);
 
     QuestionBankVo queryBankById(QueryQuestionBankOneRequest queryQuestionBankOneRequest);
 

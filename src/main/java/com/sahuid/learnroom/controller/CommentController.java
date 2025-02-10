@@ -44,8 +44,8 @@ public class CommentController {
     }
 
     @GetMapping("/delete")
-    public R<Void> deleteComment(Long commentId, HttpServletRequest request) {
-        commentService.deleteComment(commentId, request);
+    public R<Void> deleteComment(Long commentId) {
+        commentService.deleteComment(commentId);
         return R.ok();
     }
 }

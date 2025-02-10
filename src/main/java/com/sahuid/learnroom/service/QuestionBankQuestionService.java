@@ -21,7 +21,7 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * 批量添加题目到题库
      * @param batchAddQuestionToBankRequest
      */
-    void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest, HttpServletRequest request);
+    void batchAddQuestionToBank(BatchAddQuestionToBankRequest batchAddQuestionToBankRequest);
 
     /**
      * 批量将题目添加到题库 (避免大事务)
@@ -33,16 +33,14 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
     /**
      * 批量从题库中删除题目
      * @param batchRemoveQuestionToBankRequest
-     * @param request
      */
-    void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request);
+    void batchRemoveQuestionToBank(BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest);
 
     /**
      * 从题库中添加题目
      * @param questionAndBankRequest
-     * @param request
      */
-    void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request);
+    void addQuestionToBank(QuestionAndBankRequest questionAndBankRequest);
 
     /**
      * 从题库中删除题目

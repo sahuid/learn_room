@@ -23,8 +23,8 @@ public class QuestionController {
     private  QuestionService questionService;
 
     @PostMapping("/add")
-    public R<Void> addQuestion(@RequestBody AddQuestionRequest addQuestionRequest, HttpServletRequest request) {
-        questionService.addQuestion(addQuestionRequest, request);
+    public R<Void> addQuestion(@RequestBody AddQuestionRequest addQuestionRequest) {
+        questionService.addQuestion(addQuestionRequest);
         return R.ok("添加成功");
     }
 
@@ -36,8 +36,8 @@ public class QuestionController {
     }
 
     @GetMapping("/queryOne")
-    public R<QuestionVo> queryQuestion(@RequestParam("id") Long id, HttpServletRequest request){
-        QuestionVo questionVo = questionService.queryQuestionById(id, request);
+    public R<QuestionVo> queryQuestion(@RequestParam("id") Long id){
+        QuestionVo questionVo = questionService.queryQuestionById(id);
         return R.ok(questionVo, "查询成功");
     }
 

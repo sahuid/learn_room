@@ -115,12 +115,12 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     }
 
     @Override
-    public void deleteComment(Long commentId, HttpServletRequest request) {
+    public void deleteComment(Long commentId) {
         ThrowUtil.throwIf(commentId == null || commentId <= 0, () -> new RequestParamException("请求参数错误"));
         Comment comment = this.getById(commentId);
         ThrowUtil.throwIf(comment == null, () -> new DataBaseAbsentException("当前评论不存在"));
         // 判断是否是自己发的评论
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         Long userId = currentUser.getId();
         ThrowUtil.throwIf(!userId.equals(comment.getUserId()), () -> new NoAuthException("没有权力删除别人的评论"));
         // 如果是根评论全部删除

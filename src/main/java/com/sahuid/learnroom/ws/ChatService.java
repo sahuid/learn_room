@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.ws;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
@@ -84,12 +85,9 @@ public class ChatService {
     public void OnOpen (Session session, EndpointConfig sec) {
         // 初始化 bean
         initSpringBean();
-        HttpSession httpSession = (HttpSession) sec.getUserProperties().get(HttpSession.class.getName());
         // 保存连接关系
-        UserVo user = (UserVo) httpSession.getAttribute("user");
-        this.userId = user.getId();
+        this.userId = Long.valueOf((String) StpUtil.getLoginId());
         log.info("websocket 建立链接成功, userId: {}", userId);
-
     }
 
 

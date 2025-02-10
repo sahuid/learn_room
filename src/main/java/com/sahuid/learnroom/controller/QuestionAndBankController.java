@@ -26,22 +26,22 @@ public class QuestionAndBankController {
 
     @PostMapping("/add/batch")
     @RoleCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public R<Void> batchAddQuestionToBank(@RequestBody BatchAddQuestionToBankRequest batchAddQuestionToBankRequest, HttpServletRequest request) {
-        questionBankQuestionService.batchAddQuestionToBank(batchAddQuestionToBankRequest, request);
+    public R<Void> batchAddQuestionToBank(@RequestBody BatchAddQuestionToBankRequest batchAddQuestionToBankRequest) {
+        questionBankQuestionService.batchAddQuestionToBank(batchAddQuestionToBankRequest);
         return R.ok("添加成功");
     }
 
     @PostMapping("/remove/batch")
     @RoleCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public R<Void> batchRemoveQuestionToBank(@RequestBody BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest, HttpServletRequest request) {
-        questionBankQuestionService.batchRemoveQuestionToBank(batchRemoveQuestionToBankRequest, request);
+    public R<Void> batchRemoveQuestionToBank(@RequestBody BatchRemoveQuestionToBankRequest batchRemoveQuestionToBankRequest) {
+        questionBankQuestionService.batchRemoveQuestionToBank(batchRemoveQuestionToBankRequest);
         return R.ok("删除成功");
     }
 
     @PostMapping("/addQuestion")
     @RoleCheck(mustRole = UserConstant.ADMIN_ROLE)
-    public R<Void> addQuestionToBank(@RequestBody QuestionAndBankRequest questionAndBankRequest, HttpServletRequest request) {
-        questionBankQuestionService.addQuestionToBank(questionAndBankRequest, request);
+    public R<Void> addQuestionToBank(@RequestBody QuestionAndBankRequest questionAndBankRequest) {
+        questionBankQuestionService.addQuestionToBank(questionAndBankRequest);
         return R.ok("添加成功");
     }
 

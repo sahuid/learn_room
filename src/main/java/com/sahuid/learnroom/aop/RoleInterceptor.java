@@ -30,10 +30,7 @@ public class RoleInterceptor {
     public Object doInterceptor(ProceedingJoinPoint joinPoint, RoleCheck roleCheck) throws Throwable {
         String mustRole = roleCheck.mustRole();
 
-        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-
-        UserVo currentUser = userService.getCurrentUser(request);
+        UserVo currentUser = userService.getCurrentUser();
         Integer userRole = currentUser.getUserRole();
         // 只有权限才能进入
         if (StrUtil.isNotBlank(mustRole)) {

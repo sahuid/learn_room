@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.controller;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
@@ -25,9 +26,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public R<UserVo> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
-        UserVo userVo = userService.userLogin(userLoginRequest, request);
-        return R.ok(userVo, "登录成功");
+    public R<SaTokenInfo> userLogin(@RequestBody UserLoginRequest userLoginRequest) {
+        SaTokenInfo tokenInfo = userService.userLogin(userLoginRequest);
+        return R.ok(tokenInfo, "登录成功");
     }
 
     @PostMapping("/register")
@@ -43,8 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public R<UserVo> getCurrentUser(HttpServletRequest request){
-        UserVo currentUser = userService.getCurrentUser(request);
+    public R<UserVo> getCurrentUser(){
+        UserVo currentUser = userService.getCurrentUser();
         return R.ok(currentUser);
     }
 
@@ -56,14 +57,14 @@ public class UserController {
     }
 
     @GetMapping("/sign")
-    public R<Void> userSign(HttpServletRequest request){
-        userService.userSign(request);
+    public R<Void> userSign(){
+        userService.userSign();
         return R.ok("签到成功");
     }
 
     @GetMapping("/getSignData")
-    public R<List<Integer>> getUserSignData(Integer year, HttpServletRequest request) {
-        List<Integer> list = userService.getUserSignData(year, request);
+    public R<List<Integer>> getUserSignData(Integer year) {
+        List<Integer> list = userService.getUserSignData(year);
         return R.ok(list);
     }
 }
