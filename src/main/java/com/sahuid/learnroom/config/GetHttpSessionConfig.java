@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.config;
 
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +23,9 @@ public class GetHttpSessionConfig extends ServerEndpointConfig.Configurator {
      */
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-        String strUserId = (String) StpUtil.getLoginId();
-        sec.getUserProperties().put("userId", Long.valueOf(strUserId));
+        SaSession session = StpUtil.getSession();
+        String longId = session.getId();
+        Long userId = Long.valueOf(longId);
+        sec.getUserProperties().put("userId", userId);
     }
 }

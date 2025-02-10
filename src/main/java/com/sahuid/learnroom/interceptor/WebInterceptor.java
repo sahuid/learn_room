@@ -1,9 +1,6 @@
 package com.sahuid.learnroom.interceptor;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,11 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @DateTime: 2025/2/10 14:48
  **/
 @Configuration
-public class SaTokenInterceptor implements WebMvcConfigurer {
+public class WebInterceptor implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
+        registry.addInterceptor(new MyInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/user/login",

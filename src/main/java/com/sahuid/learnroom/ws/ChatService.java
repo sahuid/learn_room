@@ -86,7 +86,7 @@ public class ChatService {
         // 初始化 bean
         initSpringBean();
         // 保存连接关系
-        this.userId = Long.valueOf((String) StpUtil.getLoginId());
+        this.userId = (Long) sec.getUserProperties().get("userId");
         log.info("websocket 建立链接成功, userId: {}", userId);
     }
 
