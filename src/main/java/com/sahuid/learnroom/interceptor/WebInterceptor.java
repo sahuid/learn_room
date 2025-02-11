@@ -18,7 +18,8 @@ public class WebInterceptor implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/user/login",
-                        "/user/register"
+                        "/user/register",
+                        "/doc.html"
                 );
     }
 }

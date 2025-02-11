@@ -61,3 +61,15 @@ sa-token:
   # 是否输出操作日志
   is-log: true
 
+# minio
+
+minio:
+  config:
+    url: http://127.0.0.1:9005 #ip地址
+    accessKey: admin #  账号
+    secretKey: password #  密码
+    secure: false #如果是true，则用的是https而不是http,默认值是true
+    bucketName: "test"  # 桶的名字 相当于文件夹
+
+
+

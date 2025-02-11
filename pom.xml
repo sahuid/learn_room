@@ -97,6 +97,12 @@
             <artifactId>sa-token-spring-boot-starter</artifactId>
             <version>1.40.0</version>
         </dependency>
+        <!--minio-->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>8.5.6</version>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>

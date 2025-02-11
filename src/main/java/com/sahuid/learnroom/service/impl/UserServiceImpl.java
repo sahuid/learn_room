@@ -115,6 +115,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (StrUtil.isNotBlank(userName)) {
             user.setUserName(userName);
         }
+        String picture = userUpdateRequest.getPicture();
+        if (StrUtil.isNotBlank(picture)) {
+            user.setUserPicture(picture);
+        }
         boolean updateById = this.updateById(user);
         ThrowUtil.throwIf(!updateById, () -> new DataOperationException("修改失败"));
     }

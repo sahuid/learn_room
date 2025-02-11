@@ -25,4 +25,9 @@ public class UserUpdateRequest {
      */
     private String userPhone;
 
+    /**
+     * 用户头像
+     */
+    private String picture;
+
 }
