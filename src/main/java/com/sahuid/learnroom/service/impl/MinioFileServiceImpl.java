@@ -58,6 +58,6 @@ public class MinioFileServiceImpl implements UploadService {
             log.error("文件下载失败：{}", e.getMessage());
             throw new RuntimeException("文件下载异常:" + e.getMessage());
         }
-        return "http://127.0.0.1:9005" + "/" + minioConfig.getBucketName() + "/" + newFileName;
+        return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + newFileName;
     }
 }
