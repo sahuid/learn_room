@@ -87,13 +87,16 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBandMapper, Que
         }
         String title = updateQuestionBankRequest.getTitle();
         String description = updateQuestionBankRequest.getDescription();
+        String picture = updateQuestionBankRequest.getPicture();
         if (StrUtil.isNotBlank(title)) {
             questionBand.setTitle(title);
         }
         if (StrUtil.isNotBlank(description)) {
             questionBand.setDescription(description);
         }
-
+        if (StrUtil.isNotBlank(picture)) {
+            questionBand.setPicture(picture);
+        }
         boolean updateById = this.updateById(questionBand);
         ThrowUtil.throwIf(!updateById, () -> new DataOperationException("题库修改失败"));
     }

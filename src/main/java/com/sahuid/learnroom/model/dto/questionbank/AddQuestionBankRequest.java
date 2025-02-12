@@ -16,5 +16,10 @@ public class AddQuestionBankRequest {
      */
     private String description;
 
+    /**
+     * 题库图片
+     */
+    private String picture;
+
 
 }

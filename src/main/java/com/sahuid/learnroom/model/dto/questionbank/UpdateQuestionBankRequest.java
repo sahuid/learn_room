@@ -17,5 +17,10 @@ public class UpdateQuestionBankRequest {
      */
     private String description;
 
+    /**
+     * 题库图片
+     */
+    private String picture;
+
 
 }
