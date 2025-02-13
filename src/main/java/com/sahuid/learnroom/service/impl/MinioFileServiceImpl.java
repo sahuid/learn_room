@@ -1,11 +1,10 @@
 package com.sahuid.learnroom.service.impl;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.core.util.StrUtil;
 import com.sahuid.learnroom.config.MinioConfig;
 import com.sahuid.learnroom.exception.RequestParamException;
-import com.sahuid.learnroom.service.UploadService;
+import com.sahuid.learnroom.filexport.FileExportClient;
+import com.sahuid.learnroom.service.FileService;
 import com.sahuid.learnroom.utils.ThrowUtil;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.rmi.ServerException;
-import java.util.UUID;
 
 /**
  * @Author: mcj
@@ -25,13 +21,17 @@ import java.util.UUID;
  **/
 @Service
 @Slf4j
-public class MinioFileServiceImpl implements UploadService {
+public class MinioFileServiceImpl implements FileService {
 
     @Resource
     private MinioConfig minioConfig;
 
     @Resource
     private MinioClient minioClient;
+
+    @Resource
+    private FileExportClient fileExportClient;
+
 
     @Override
     public String upload(MultipartFile multipartFile) {
@@ -59,5 +59,11 @@ public class MinioFileServiceImpl implements UploadService {
             throw new RuntimeException("文件下载异常:" + e.getMessage());
         }
         return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + newFileName;
+    }
+
+    @Override
+    public void fileExport2DB(MultipartFile file) {
+        String filePath = this.upload(file);
+        fileExportClient.fileExport2DB(filePath);
     }
 }

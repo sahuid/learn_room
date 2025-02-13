@@ -1,7 +1,7 @@
 package com.sahuid.learnroom.controller;
 
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.service.UploadService;
+import com.sahuid.learnroom.service.FileService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,11 +20,17 @@ import javax.annotation.Resource;
 public class FileController {
 
     @Resource
-    private UploadService uploadService;
+    private FileService fileService;
 
     @PostMapping("/upload")
     public R<String> upload(@RequestParam("file") MultipartFile file) {
-        String fileName = uploadService.upload(file);
+        String fileName = fileService.upload(file);
         return R.ok(fileName, "上传成功");
+    }
+
+    @PostMapping("/export")
+    public R<Void> fileExport2DB(@RequestParam("file") MultipartFile file) {
+        fileService.fileExport2DB(file);
+        return R.ok("保存成功");
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Description: 文件上传接口
  * @DateTime: 2025/2/11 14:40
  **/
-public interface UploadService {
+public interface FileService {
 
     /**
      * 文件上传
@@ -15,4 +15,10 @@ public interface UploadService {
      * @return  文件名称
      */
     String upload(MultipartFile multipartFile);
+
+    /**
+     * 文件保存到数据库中
+     * @param file
+     */
+    void fileExport2DB(MultipartFile file);
 }
