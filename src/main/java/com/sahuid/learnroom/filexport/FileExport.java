@@ -1,5 +1,7 @@
 package com.sahuid.learnroom.filexport;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Author: mcj
  * @Description: 文件导出接口
@@ -15,4 +17,10 @@ public interface FileExport {
 
 
     String supportFileType();
+
+    /**
+     * 返回文件模板
+     * @param response
+     */
+    void exportFileTemplate(HttpServletResponse response);
 }

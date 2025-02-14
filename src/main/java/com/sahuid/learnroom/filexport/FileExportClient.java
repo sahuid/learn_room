@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
 /**
@@ -25,5 +26,10 @@ public class FileExportClient {
     public void fileExport2DB(String fileName, String type) {
         FileExport fileExport = fileExportFactory.getFileExport(type);
         fileExport.fileExport2DB(fileName);
+    }
+
+    public void exportFileTemplate(String type, HttpServletResponse response) {
+        FileExport fileExport = fileExportFactory.getFileExport(type);
+        fileExport.exportFileTemplate(response);
     }
 }

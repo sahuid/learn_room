@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: mcj
@@ -71,5 +72,10 @@ public class MinioFileServiceImpl implements FileService {
     public void fileExport2DB(MultipartFile file) {
         String fileName = this.uploadFileGetName(file);
         fileExportClient.fileExport2DB(fileName);
+    }
+
+    @Override
+    public void exportFileTemplate(String type, HttpServletResponse response) {
+        fileExportClient.exportFileTemplate(type, response);
     }
 }

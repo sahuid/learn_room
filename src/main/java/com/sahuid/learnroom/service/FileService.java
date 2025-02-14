@@ -2,6 +2,8 @@ package com.sahuid.learnroom.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @Author: mcj
  * @Description: 文件上传接口
@@ -28,4 +30,11 @@ public interface FileService {
      * @param file
      */
     void fileExport2DB(MultipartFile file);
+
+    /**
+     * 返回模板文件
+     * @param type
+     * @param response
+     */
+    void exportFileTemplate(String type, HttpServletResponse response);
 }

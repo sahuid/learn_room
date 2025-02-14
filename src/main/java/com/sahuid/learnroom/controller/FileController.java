@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author: mcj
@@ -32,5 +33,10 @@ public class FileController {
     public R<Void> fileExport2DB(@RequestParam("file") MultipartFile file) {
         fileService.fileExport2DB(file);
         return R.ok("保存成功");
+    }
+
+    @PostMapping("/template")
+    public void exportFileTemplate(String type, HttpServletResponse response) {
+        fileService.exportFileTemplate(type, response);
     }
 }
