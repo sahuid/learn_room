@@ -5,6 +5,7 @@ import com.sahuid.learnroom.exception.MinioConnectionException;
 import com.sahuid.learnroom.exception.MinioOperationException;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.service.QuestionService;
+import com.sahuid.learnroom.utils.MinioUtil;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
 import io.minio.errors.ErrorResponseException;
@@ -17,7 +18,7 @@ import java.util.List;
  * @Description: 文件导出抽象类
  * @DateTime: 2025/2/13 18:05
  **/
-public abstract class AbstractFileExport implements FileExport{
+public abstract class AbstractFileExport implements FileExport {
 
     @Resource
     protected MinioClient minioClient;
@@ -48,6 +49,7 @@ public abstract class AbstractFileExport implements FileExport{
 
     /**
      * 保存数据库
+     *
      * @param questionList
      */
     private void save2DB(List<Question> questionList) {
@@ -57,6 +59,7 @@ public abstract class AbstractFileExport implements FileExport{
 
     /**
      * 处理文件内容
+     *
      * @param list
      * @return
      */
@@ -66,6 +69,7 @@ public abstract class AbstractFileExport implements FileExport{
 
     /**
      * 读取文件内容
+     *
      * @param fileName
      * @return
      */
@@ -78,18 +82,6 @@ public abstract class AbstractFileExport implements FileExport{
      */
     private void checkMinioExist(String fileName) {
         String bucketName = minioConfig.getBucketName();
-        try {
-            minioClient.statObject(StatObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(fileName)
-                    .build());
-        } catch (ErrorResponseException e) {
-            if (e.response().code() == 404) {
-                return;
-            }
-            throw new MinioOperationException("检查对象存在性失败");
-        } catch (Exception e) {
-            throw new MinioConnectionException("MinIO 连接异常");
-        }
+        MinioUtil.checkMinioExist(minioClient, bucketName, fileName);
     }
 }

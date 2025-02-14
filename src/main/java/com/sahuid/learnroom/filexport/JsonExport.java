@@ -5,6 +5,7 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONUtil;
 import com.sahuid.learnroom.common.UserThreadLocalData;
 import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.utils.MinioUtil;
 import io.minio.GetObjectArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  **/
 @Component
 @Slf4j
-public class JsonExport extends AbstractFileExport{
+public class JsonExport extends AbstractFileExport {
 
     @Override
     protected List<Question> processData(List<Question> list) {
@@ -54,19 +55,16 @@ public class JsonExport extends AbstractFileExport{
     @Override
     protected List<Question> readFileContext(String fileName) {
         String bucketName = minioConfig.getBucketName();
-        String jsonStr;
-        try (InputStream stream = minioClient.getObject(
-                GetObjectArgs.builder()
-                        .bucket(bucketName)
-                        .object(fileName)
-                        .build())) {
-            jsonStr = IoUtil.readUtf8(stream);
+        String jsonStr = MinioUtil.readMinioContext(minioClient, bucketName, fileName);
+        List<Question> list;
+        try {
+            list = JSONUtil.toBean(jsonStr, new TypeReference<List<Question>>() {
+            }, false);
         } catch (Exception e) {
-            log.error("Minio 读取文件异常，{}", e.getMessage());
-            throw new RuntimeException(e);
+            log.error("json 文件格式不正确，请按照模板文件进行书写,{}", e.getMessage());
+            throw new IllegalArgumentException("json 文件格式不正确");
         }
-        return JSONUtil.toBean(jsonStr, new TypeReference<List<Question>>() {
-        }, false);
+        return list;
     }
 
     @Override
