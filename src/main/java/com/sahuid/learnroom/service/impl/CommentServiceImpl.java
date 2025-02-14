@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -77,6 +78,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
     @NotNull
     private List<CommentVo> commentToVo(List<Comment> records) {
+        if (records.isEmpty()) {
+            return new ArrayList<>();
+        }
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
         List<CommentVo> list = records.stream().map(comment -> {
             CommentVo commentVo = new CommentVo();
