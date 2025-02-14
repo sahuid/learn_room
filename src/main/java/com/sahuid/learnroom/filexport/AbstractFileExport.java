@@ -1,11 +1,15 @@
 package com.sahuid.learnroom.filexport;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.TypeReference;
-import cn.hutool.json.JSONUtil;
+import com.sahuid.learnroom.config.MinioConfig;
+import com.sahuid.learnroom.exception.MinioConnectionException;
+import com.sahuid.learnroom.exception.MinioOperationException;
 import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.service.QuestionService;
+import io.minio.MinioClient;
+import io.minio.StatObjectArgs;
+import io.minio.errors.ErrorResponseException;
 
-import java.io.File;
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -14,25 +18,40 @@ import java.util.List;
  * @DateTime: 2025/2/13 18:05
  **/
 public abstract class AbstractFileExport implements FileExport{
+
+    @Resource
+    protected MinioClient minioClient;
+
+    @Resource
+    protected MinioConfig minioConfig;
+
+    @Resource
+    protected QuestionService questionService;
+
+
     @Override
-    public void fileExport2DB(String filePath) {
+    public void fileExport2DB(String fileName) {
         // 检查文件
-        File file = checkFile(filePath);
+        checkMinioExist(fileName);
         // 读取文件内容
-        List<Question> questionList = readFileContext(file);
+        List<Question> questionList = readFileContext(fileName);
         // 处理内容
-        questionList = processData(questionList);
+        if (needProcessData()) {
+            questionList = processData(questionList);
+        }
         // 保存数据库
         save2DB(questionList);
         System.out.println(questionList);
     }
+
+    protected abstract boolean needProcessData();
 
     /**
      * 保存数据库
      * @param questionList
      */
     private void save2DB(List<Question> questionList) {
-        System.out.println("save 2 db");
+        questionService.saveBatch(questionList);
     }
 
 
@@ -41,25 +60,36 @@ public abstract class AbstractFileExport implements FileExport{
      * @param list
      * @return
      */
-    protected abstract List<Question> processData(List<Question> list);
+    protected List<Question> processData(List<Question> list) {
+        return list;
+    }
 
     /**
      * 读取文件内容
-     * @param file
+     * @param fileName
      * @return
      */
-    protected abstract List<Question> readFileContext(File file);
+    protected abstract List<Question> readFileContext(String fileName);
 
     /**
      * 检查文件
-     * @param filePath
-     * @return
+     *
+     * @param fileName
      */
-    private File checkFile(String filePath) {
-        File file = new File(filePath);
-        if(!file.exists() || file.isDirectory()) {
-            throw new IllegalArgumentException("文件必须存在且不能是文件夹");
+    private void checkMinioExist(String fileName) {
+        String bucketName = minioConfig.getBucketName();
+        try {
+            minioClient.statObject(StatObjectArgs.builder()
+                    .bucket(bucketName)
+                    .object(fileName)
+                    .build());
+        } catch (ErrorResponseException e) {
+            if (e.response().code() == 404) {
+                return;
+            }
+            throw new MinioOperationException("检查对象存在性失败");
+        } catch (Exception e) {
+            throw new MinioConnectionException("MinIO 连接异常");
         }
-        return file;
     }
 }

@@ -12,9 +12,16 @@ public interface FileService {
     /**
      * 文件上传
      * @param multipartFile
-     * @return  文件名称
+     * @return  文件路径
      */
     String upload(MultipartFile multipartFile);
+
+    /**
+     * 文件上传且返回文件名称
+     * @param multipartFile
+     * @return 文件名称
+     */
+    String uploadFileGetName(MultipartFile multipartFile);
 
     /**
      * 文件保存到数据库中

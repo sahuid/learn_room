@@ -9,9 +9,9 @@ public interface FileExport {
 
     /**
      * 文件导出到数据库
-     * @param filePath  文件路径
+     * @param fileName  文件名称
      */
-    void fileExport2DB(String filePath);
+    void fileExport2DB(String fileName);
 
 
     String supportFileType();

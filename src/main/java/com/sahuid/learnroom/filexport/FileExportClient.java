@@ -17,15 +17,13 @@ public class FileExportClient {
     @Resource
     private FileExportFactory fileExportFactory;
 
-    public void fileExport2DB(String path) {
-        File file = new File(path);
-        String type = FileUtil.getSuffix(file);
-        FileExport fileExport = fileExportFactory.getFileExport(type);
-        fileExport.fileExport2DB(path);
+    public void fileExport2DB(String fileName) {
+        String type = FileUtil.getSuffix(fileName);
+        this.fileExport2DB(fileName, type);
     }
 
-    public void fileExport2DB(String path, String type) {
+    public void fileExport2DB(String fileName, String type) {
         FileExport fileExport = fileExportFactory.getFileExport(type);
-        fileExport.fileExport2DB(path);
+        fileExport.fileExport2DB(fileName);
     }
 }

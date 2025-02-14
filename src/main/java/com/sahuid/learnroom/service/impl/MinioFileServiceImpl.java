@@ -35,6 +35,12 @@ public class MinioFileServiceImpl implements FileService {
 
     @Override
     public String upload(MultipartFile multipartFile) {
+        String newFileName = this.uploadFileGetName(multipartFile);
+        return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + newFileName;
+    }
+
+    @Override
+    public String uploadFileGetName(MultipartFile multipartFile) {
         ThrowUtil.throwIf(multipartFile == null,() -> new RequestParamException("文件为空"));
         // 获取文件真实名称
         String originalFilename = multipartFile.getOriginalFilename();
@@ -58,12 +64,12 @@ public class MinioFileServiceImpl implements FileService {
             log.error("文件下载失败：{}", e.getMessage());
             throw new RuntimeException("文件下载异常:" + e.getMessage());
         }
-        return minioConfig.getUrl() + "/" + minioConfig.getBucketName() + "/" + newFileName;
+        return newFileName;
     }
 
     @Override
     public void fileExport2DB(MultipartFile file) {
-        String filePath = this.upload(file);
-        fileExportClient.fileExport2DB(filePath);
+        String fileName = this.uploadFileGetName(file);
+        fileExportClient.fileExport2DB(fileName);
     }
 }

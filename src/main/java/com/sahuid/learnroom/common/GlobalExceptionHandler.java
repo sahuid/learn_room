@@ -43,4 +43,16 @@ public class GlobalExceptionHandler {
         log.error("DataOperationException:" + e.getMessage());
         return R.fail(500, e.getMessage());
     }
+
+    @ExceptionHandler(MinioOperationException.class)
+    public R<?> MinioOperationException(MinioOperationException e) {
+        log.error("MinioOperationException:" + e.getMessage());
+        return R.fail(500, e.getMessage());
+    }
+
+    @ExceptionHandler(MinioConnectionException.class)
+    public R<?> MinioConnectionException(MinioConnectionException e) {
+        log.error("MinioConnectionException:" + e.getMessage());
+        return R.fail(500, e.getMessage());
+    }
 }
