@@ -1,6 +1,7 @@
 package com.sahuid.learnroom.filexport;
 
 import com.sahuid.learnroom.config.MinioConfig;
+import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.MinioConnectionException;
 import com.sahuid.learnroom.exception.MinioOperationException;
 import com.sahuid.learnroom.model.entity.Question;
@@ -9,15 +10,19 @@ import com.sahuid.learnroom.utils.MinioUtil;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
 import io.minio.errors.ErrorResponseException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @Author: mcj
  * @Description: 文件导出抽象类
  * @DateTime: 2025/2/13 18:05
  **/
+@Slf4j
 public abstract class AbstractFileExport implements FileExport {
 
     @Resource
@@ -28,6 +33,9 @@ public abstract class AbstractFileExport implements FileExport {
 
     @Resource
     protected QuestionService questionService;
+
+    @Resource
+    protected TransactionTemplate transactionTemplate;
 
 
     @Override
@@ -42,7 +50,6 @@ public abstract class AbstractFileExport implements FileExport {
         }
         // 保存数据库
         save2DB(questionList);
-        System.out.println(questionList);
     }
 
     protected abstract boolean needProcessData();
@@ -53,7 +60,19 @@ public abstract class AbstractFileExport implements FileExport {
      * @param questionList
      */
     private void save2DB(List<Question> questionList) {
-        questionService.saveBatch(questionList);
+        CompletableFuture.runAsync(() ->{
+            // 手动进行事务管理
+            transactionTemplate.execute(status ->{
+                try{
+                    questionService.saveBatch(questionList);
+                    return true;
+                }catch (Exception e){
+                    status.setRollbackOnly();
+                    log.error("文件批量插入失败:{}", e.getMessage());
+                    throw new DataOperationException("文件批量插入失败");
+                }
+            });
+        });
     }
 
 
