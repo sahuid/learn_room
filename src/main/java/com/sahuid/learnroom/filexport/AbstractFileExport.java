@@ -5,6 +5,7 @@ import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.MinioConnectionException;
 import com.sahuid.learnroom.exception.MinioOperationException;
 import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.mq.RabbitMqService;
 import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.utils.MinioUtil;
 import io.minio.MinioClient;
@@ -32,10 +33,7 @@ public abstract class AbstractFileExport implements FileExport {
     protected MinioConfig minioConfig;
 
     @Resource
-    protected QuestionService questionService;
-
-    @Resource
-    protected TransactionTemplate transactionTemplate;
+    protected RabbitMqService rabbitMqService;
 
 
     @Override
@@ -60,19 +58,7 @@ public abstract class AbstractFileExport implements FileExport {
      * @param questionList
      */
     private void save2DB(List<Question> questionList) {
-        CompletableFuture.runAsync(() ->{
-            // 手动进行事务管理
-            transactionTemplate.execute(status ->{
-                try{
-                    questionService.saveBatch(questionList);
-                    return true;
-                }catch (Exception e){
-                    status.setRollbackOnly();
-                    log.error("文件批量插入失败:{}", e.getMessage());
-                    throw new DataOperationException("文件批量插入失败");
-                }
-            });
-        });
+        rabbitMqService.sendQuestion2DBMessage(questionList);
     }
 
 

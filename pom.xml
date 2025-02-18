@@ -103,7 +103,11 @@
             <artifactId>minio</artifactId>
             <version>8.5.6</version>
         </dependency>
-
+        <!--rabbitmq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
