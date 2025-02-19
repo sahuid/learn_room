@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.mq;
 
+import com.sahuid.learnroom.model.entity.Message;
 import com.sahuid.learnroom.model.entity.Question;
 
 import java.util.List;
@@ -11,5 +12,5 @@ import java.util.List;
  **/
 public interface RabbitMqService {
 
-    void sendQuestion2DBMessage(List<Question> list);
+    void sendQuestion2DBMessage(Message message);
 }

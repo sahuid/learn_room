@@ -1,5 +1,7 @@
 package com.sahuid.learnroom.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.model.entity.Message;
 import com.sahuid.learnroom.service.MessageService;
@@ -15,6 +17,21 @@ import org.springframework.stereotype.Service;
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message>
     implements MessageService{
 
+    @Override
+    public Message queryMessageByIdAndStatus(Long messageId, String status) {
+        LambdaQueryWrapper<Message> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Message::getMessageId, messageId);
+        wrapper.eq(Message::getStatus, status);
+        return this.getOne(wrapper);
+    }
+
+    @Override
+    public void updateMessageSuccess(Long messageId) {
+        LambdaUpdateWrapper<Message> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(Message::getMessageId, messageId);
+        updateWrapper.set(Message::getStatus, "success");
+        this.update(updateWrapper);
+    }
 }
 
 

@@ -1,17 +1,22 @@
 package com.sahuid.learnroom.filexport;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.json.JSONUtil;
 import com.sahuid.learnroom.config.MinioConfig;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.MinioConnectionException;
 import com.sahuid.learnroom.exception.MinioOperationException;
+import com.sahuid.learnroom.model.entity.Message;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.mq.RabbitMqService;
+import com.sahuid.learnroom.service.MessageService;
 import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.utils.MinioUtil;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
 import io.minio.errors.ErrorResponseException;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.pqc.legacy.math.linearalgebra.IntUtils;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -34,6 +39,12 @@ public abstract class AbstractFileExport implements FileExport {
 
     @Resource
     protected RabbitMqService rabbitMqService;
+
+    @Resource
+    protected TransactionTemplate transactionTemplate;
+
+    @Resource
+    protected MessageService messageService;
 
 
     @Override
@@ -58,7 +69,22 @@ public abstract class AbstractFileExport implements FileExport {
      * @param questionList
      */
     private void save2DB(List<Question> questionList) {
-        rabbitMqService.sendQuestion2DBMessage(questionList);
+        String jsonStr = JSONUtil.toJsonStr(questionList);
+        Message message = Message.builder()
+                .content(jsonStr)
+                .messageId(RandomUtil.randomLong())
+                .messageType("question")
+                .status("init")
+                .build();
+        boolean save = messageService.save(message);
+        if (save) {
+            // 保存成功，向 rabbitmq 发送消息
+            rabbitMqService.sendQuestion2DBMessage(message);
+        }else {
+            log.error("保存本地消息库失败，消息内容：{}", message);
+            throw new DataOperationException("保存本地消息库失败");
+        }
+
     }
 
 

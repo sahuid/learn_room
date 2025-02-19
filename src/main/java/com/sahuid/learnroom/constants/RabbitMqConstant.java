@@ -17,6 +17,14 @@ public class RabbitMqConstant {
      */
     public static final String SAVE_QUESTION_2_DB_QUEUE = "save2DB";
 
+    /**
+     * 将题目保存到数据库的 Routing Key
+     */
     public static final String SAVE_QUESTION_2_DB_ROUTING_KEY = "question";
+
+    /**
+     * 消息id的key
+     */
+    public static final String MESSAGE_ID_KEY = "msgId";
 
 }

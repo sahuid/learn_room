@@ -10,4 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface MessageService extends IService<Message> {
 
+
+    Message queryMessageByIdAndStatus(Long messageId, String status);
+
+    void updateMessageSuccess(Long messageId);
 }
