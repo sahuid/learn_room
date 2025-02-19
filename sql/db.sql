@@ -128,3 +128,14 @@ CREATE TABLE `chat_history` (
                                    `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                                    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+# 本地消息表
+CREATE TABLE `message` (
+                           `messageId` bigint NOT NULL COMMENT '消息id',
+                           `content` text NOT NULL COMMENT '消息内容',
+                           `status` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'init' COMMENT '消息状态',
+                           `messageType` varchar(128) DEFAULT NULL COMMENT '消息类型',
+                           `createTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                           PRIMARY KEY (`messageId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
