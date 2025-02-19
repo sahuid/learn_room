@@ -120,7 +120,7 @@ CREATE TABLE `comment` (
 
 
 # 聊天记录表
-CREATE TABLE `message_history` (
+CREATE TABLE `chat_history` (
                                    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键id',
                                    `userId` bigint NOT NULL COMMENT '用户id',
                                    `content` varchar(2048) NOT NULL COMMENT '聊天内容',

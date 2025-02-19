@@ -12,9 +12,9 @@ import lombok.Data;
  * 
  * @TableName message_history
  */
-@TableName(value ="message_history")
+@TableName(value ="chat_history")
 @Data
-public class MessageHistory implements Serializable {
+public class ChatHistory implements Serializable {
     /**
      * 主键id
      */

@@ -1,6 +1,5 @@
 package com.sahuid.learnroom.ws;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.dashscope.aigc.generation.GenerationResult;
 import com.alibaba.dashscope.common.Message;
 import com.alibaba.dashscope.common.Role;
@@ -10,8 +9,7 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.sahuid.learnroom.ai.AiManager;
 import com.sahuid.learnroom.config.GetHttpSessionConfig;
 import com.sahuid.learnroom.model.enums.MessageRoleEnums;
-import com.sahuid.learnroom.model.vo.UserVo;
-import com.sahuid.learnroom.service.MessageHistoryService;
+import com.sahuid.learnroom.service.ChatHistoryService;
 import com.sahuid.learnroom.service.UserService;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -20,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -50,7 +47,7 @@ public class ChatService {
     private volatile static AiManager aiManager ;
     private volatile static UserService userService;
 
-    private volatile static MessageHistoryService messageHistoryService;
+    private volatile static ChatHistoryService chatHistoryService;
 
     /**
      * 用户 id 作为唯一标识
@@ -117,7 +114,7 @@ public class ChatService {
             return;
         }
         // 保存用户提问记录
-        messageHistoryService.addMessageHistory(userId, message, MessageRoleEnums.USER);
+        chatHistoryService.addMessageHistory(userId, message, MessageRoleEnums.USER);
         // 获取消息
         Flowable<GenerationResult> resultFlowable;
         try {
@@ -201,7 +198,7 @@ public class ChatService {
         List<Message> msgManager = USER_MESSAGE_HISTORY.get(userId);
         msgManager.add(replayMessage);
         // 保存 ai 回复消息记录
-        messageHistoryService.addMessageHistory(userId, stringBuilder.toString(), MessageRoleEnums.AI);
+        chatHistoryService.addMessageHistory(userId, stringBuilder.toString(), MessageRoleEnums.AI);
     }
 
     /**
@@ -217,10 +214,10 @@ public class ChatService {
      * 初始化 spring bean
      */
     private void initSpringBean() {
-        if(aiManager != null && userService != null && messageHistoryService != null) {
+        if(aiManager != null && userService != null && chatHistoryService != null) {
             return;
         }
-        if(aiManager == null || userService == null || messageHistoryService == null) {
+        if(aiManager == null || userService == null || chatHistoryService == null) {
             synchronized (ChatService.class) {
                 if (aiManager == null) {
                     aiManager = applicationContext.getBean(AiManager.class);
@@ -228,8 +225,8 @@ public class ChatService {
                 if (userService == null) {
                     userService = applicationContext.getBean(UserService.class);
                 }
-                if(messageHistoryService == null) {
-                    messageHistoryService = applicationContext.getBean(MessageHistoryService.class);
+                if(chatHistoryService == null) {
+                    chatHistoryService = applicationContext.getBean(ChatHistoryService.class);
                 }
             }
         }

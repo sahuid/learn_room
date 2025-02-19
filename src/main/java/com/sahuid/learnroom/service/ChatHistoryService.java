@@ -1,10 +1,9 @@
 package com.sahuid.learnroom.service;
 
-import com.sahuid.learnroom.model.entity.MessageHistory;
+import com.sahuid.learnroom.model.entity.ChatHistory;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.enums.MessageRoleEnums;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,12 +11,12 @@ import java.util.List;
 * @description 针对表【message_history】的数据库操作Service
 * @createDate 2025-02-08 14:36:06
 */
-public interface MessageHistoryService extends IService<MessageHistory> {
+public interface ChatHistoryService extends IService<ChatHistory> {
 
 
     void addMessageHistory(Long userId, String message, MessageRoleEnums messageRoleEnums);
 
     void removeMessageByUserId(Long userId);
 
-    List<MessageHistory> getMessageHistory(Long userId, String cursor, Integer size);
+    List<ChatHistory> getMessageHistory(Long userId, String cursor, Integer size);
 }

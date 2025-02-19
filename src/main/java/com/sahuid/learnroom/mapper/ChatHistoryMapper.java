@@ -1,6 +1,6 @@
 package com.sahuid.learnroom.mapper;
 
-import com.sahuid.learnroom.model.entity.MessageHistory;
+import com.sahuid.learnroom.model.entity.ChatHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-02-08 14:36:06
 * @Entity com.sahuid.learnroom.model.entity.MessageHistory
 */
-public interface MessageHistoryMapper extends BaseMapper<MessageHistory> {
+public interface ChatHistoryMapper extends BaseMapper<ChatHistory> {
 
 }
 
