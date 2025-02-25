@@ -2,11 +2,14 @@ package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.PageResult;
+import com.sahuid.learnroom.model.dto.QuestionDto;
 import com.sahuid.learnroom.model.req.question.*;
 import com.sahuid.learnroom.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.model.vo.QuestionVo;
+
+import java.util.List;
 
 /**
 * @author Lenovo

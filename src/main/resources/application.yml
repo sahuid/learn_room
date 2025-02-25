@@ -21,6 +21,25 @@ spring:
     multipart:
       # 大小限制
       max-file-size: 10MB
+  # rabbitmq
+  rabbitmq:
+    username: learnroom
+    password: 123
+    virtual-host: /learnroom
+    host: 192.168.60.130
+    port: 5672
+    publisher-confirm-type: correlated # confirm 机制
+    publisher-returns: true # 路由失败回调
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动 ACK
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 5000
+  elasticsearch:
+    uris: http://localhost:9200
+
 server:
   address: 0.0.0.0
   port: 9000

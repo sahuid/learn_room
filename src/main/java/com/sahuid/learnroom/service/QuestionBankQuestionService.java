@@ -1,5 +1,6 @@
 package com.sahuid.learnroom.service;
 
+import com.sahuid.learnroom.model.dto.QuestionDto;
 import com.sahuid.learnroom.model.req.questionAndBank.BatchAddQuestionToBankRequest;
 import com.sahuid.learnroom.model.req.questionAndBank.BatchRemoveQuestionToBankRequest;
 import com.sahuid.learnroom.model.req.questionbank.QuestionAndBankRequest;
@@ -46,4 +47,11 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * @param questionAndBankRequest
      */
     void deleteQuestionFromBank(QuestionAndBankRequest questionAndBankRequest);
+
+
+    /**
+     * 查询所有题目，并组装题库id
+     * @return
+     */
+    List<QuestionDto> queryQuestionAssembleBankId();
 }

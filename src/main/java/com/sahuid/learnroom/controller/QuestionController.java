@@ -65,4 +65,10 @@ public class QuestionController {
         PageResult<QuestionViewHistoryVo> pageResult = questionService.getQuestionViewHistory(queryQuestionViewHistoryRequest);
         return R.ok(pageResult, "查询成功");
     }
+
+    @PostMapping("/search")
+    public R<PageResult<Question>> searchQuestionByPage(@RequestBody QueryQuestionByPageRequest queryQuestionByPageRequest) {
+        PageResult<Question> pageResult = questionService.queryFromEs(queryQuestionByPageRequest);
+        return R.ok(pageResult, "查询成功");
+    }
 }

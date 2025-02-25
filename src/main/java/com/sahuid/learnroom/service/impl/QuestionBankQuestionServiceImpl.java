@@ -1,11 +1,13 @@
 package com.sahuid.learnroom.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.NoLoginException;
 import com.sahuid.learnroom.exception.RequestParamException;
+import com.sahuid.learnroom.model.dto.QuestionDto;
 import com.sahuid.learnroom.model.req.questionAndBank.BatchAddQuestionToBankRequest;
 import com.sahuid.learnroom.model.req.questionAndBank.BatchRemoveQuestionToBankRequest;
 import com.sahuid.learnroom.model.req.questionbank.QuestionAndBankRequest;
@@ -30,11 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -217,6 +221,40 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
         wrapper.eq(QuestionBankQuestion::getQuestionBandId, questionBankId);
         this.remove(wrapper);
 
+    }
+
+
+    @Override
+    public List<QuestionDto> queryQuestionAssembleBankId() {
+        // 查询所有题目
+        List<Question> questionList = questionService.list();
+        // 查询所有题库
+        LambdaQueryWrapper<QuestionBankQuestion> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(QuestionBankQuestion::getQuestionId);
+        wrapper.select(QuestionBankQuestion::getQuestionBandId);
+        List<QuestionBankQuestion> questionBankAndQuestionList = this.list(wrapper);
+        // 根据题目 id 和题目和题库的关系转化成 map
+        Map<Long, QuestionBankQuestion> questionIdMap = questionBankAndQuestionList
+                .stream()
+                .collect(Collectors.toMap(
+                    QuestionBankQuestion::getQuestionId,
+                    Function.identity(),
+                    (v1, v2) -> v1
+        ));
+        // 生成 questionDto
+        List<QuestionDto> questionDtoList = questionList.stream()
+                .map(question -> {
+                    QuestionDto questionDto = new QuestionDto();
+                    BeanUtil.copyProperties(question, questionDto, false);
+                    Long questionId = question.getId();
+                    QuestionBankQuestion questionBankQuestion = questionIdMap.get(questionId);
+                    if (questionBankQuestion != null) {
+                        Long questionBandId = questionBankQuestion.getQuestionBandId();
+                        questionDto.setQuestionBankId(questionBandId);
+                    }
+                    return questionDto;
+                }).collect(Collectors.toList());
+        return questionDtoList;
     }
 }
 

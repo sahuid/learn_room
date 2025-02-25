@@ -8,33 +8,34 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.common.PageResult;
-import com.sahuid.learnroom.common.R;
+import com.sahuid.learnroom.es.model.QuestionEsDTO;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.RequestParamException;
-import com.sahuid.learnroom.model.dto.question.*;
+import com.sahuid.learnroom.mapper.QuestionMapper;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.entity.QuestionView;
+import com.sahuid.learnroom.model.req.question.*;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.model.vo.QuestionVo;
 import com.sahuid.learnroom.model.vo.UserVo;
-import com.sahuid.learnroom.service.LikesService;
 import com.sahuid.learnroom.service.QuestionService;
-import com.sahuid.learnroom.mapper.QuestionMapper;
 import com.sahuid.learnroom.service.QuestionViewService;
 import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -50,7 +51,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     private UserService userService;
 
     @Resource
-    private LikesService likesService;
+    private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
     @Resource
     private QuestionViewService questionViewService;
@@ -217,6 +218,54 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         }).collect(Collectors.toList());
         pageResult.setData(resultList);
         pageResult.setTotal(page.getTotal());
+        return pageResult;
+    }
+
+    @Override
+    public PageResult<Question> queryFromEs(QueryQuestionByPageRequest queryQuestionByPageRequest) {
+        ThrowUtil.throwIf(queryQuestionByPageRequest == null,
+                () -> new RequestParamException("查询请求参数错误"));
+        // 获取查询参数
+        String searchText = queryQuestionByPageRequest.getSearchText();
+        Long questionBankId = queryQuestionByPageRequest.getQuestionBankId();
+        // 获取分页参数 注意，ES 的起始页为 0
+        int pageSize = queryQuestionByPageRequest.getPageSize();
+        int page = queryQuestionByPageRequest.getPage() - 1;
+
+        // 构造查询条件
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        // 精准查询
+        boolQueryBuilder.filter(QueryBuilders.termQuery("isDelete", 0));
+        if (questionBankId != null) {
+            boolQueryBuilder.filter(QueryBuilders.termQuery("questionBankId", questionBankId));
+        }
+        // 按关键词检索
+        if (StrUtil.isNotBlank(searchText)) {
+            boolQueryBuilder.should(QueryBuilders.matchQuery("title", searchText));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("context", searchText));
+            boolQueryBuilder.should(QueryBuilders.matchQuery("answer", searchText));
+            boolQueryBuilder.minimumShouldMatch(1);
+        }
+        // 分页
+        PageRequest pageRequest = PageRequest.of(page, pageSize);
+        // 构造查询
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(pageRequest)
+                .build();
+        SearchHits<QuestionEsDTO> searchHits =
+                elasticsearchRestTemplate.search(searchQuery, QuestionEsDTO.class);
+        // 封装返回对象
+        PageResult<Question> pageResult = new PageResult<>();
+        pageResult.setTotal(searchHits.getTotalHits());
+        List<Question> dataList = new ArrayList<>();
+        if (searchHits.hasSearchHits()) {
+            List<SearchHit<QuestionEsDTO>> searchHitList = searchHits.getSearchHits();
+            for (SearchHit<QuestionEsDTO> questionEsDTOSearchHit : searchHitList) {
+                dataList.add(QuestionEsDTO.esToObj(questionEsDTOSearchHit.getContent()));
+            }
+        }
+        pageResult.setData(dataList);
         return pageResult;
     }
 }

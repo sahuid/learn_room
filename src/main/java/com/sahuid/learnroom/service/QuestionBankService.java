@@ -1,6 +1,7 @@
 package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sahuid.learnroom.model.dto.QuestionDto;
 import com.sahuid.learnroom.model.req.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -29,4 +30,6 @@ public interface QuestionBankService extends IService<QuestionBank> {
      * @return
      */
     List<QuestionBank> queryBankList();
+
+
 }
