@@ -1,13 +1,12 @@
 package com.sahuid.learnroom.service;
 
 import com.sahuid.learnroom.common.PageResult;
-import com.sahuid.learnroom.model.dto.comment.PublishCommentRequest;
-import com.sahuid.learnroom.model.dto.comment.QueryCommentByPageRequest;
+import com.sahuid.learnroom.model.req.comment.PublishCommentRequest;
+import com.sahuid.learnroom.model.req.comment.QueryCommentByPageRequest;
 import com.sahuid.learnroom.model.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.CommentVo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

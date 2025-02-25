@@ -4,16 +4,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.constants.UserConstant;
-import com.sahuid.learnroom.model.dto.questionbank.*;
+import com.sahuid.learnroom.model.req.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.sahuid.learnroom.model.vo.QuestionBankVo;
 import com.sahuid.learnroom.service.QuestionBankService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequestMapping("/questionBank")

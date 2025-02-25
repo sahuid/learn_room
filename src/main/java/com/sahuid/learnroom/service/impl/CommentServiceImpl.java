@@ -9,8 +9,8 @@ import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.NoAuthException;
 import com.sahuid.learnroom.exception.RequestParamException;
-import com.sahuid.learnroom.model.dto.comment.PublishCommentRequest;
-import com.sahuid.learnroom.model.dto.comment.QueryCommentByPageRequest;
+import com.sahuid.learnroom.model.req.comment.PublishCommentRequest;
+import com.sahuid.learnroom.model.req.comment.QueryCommentByPageRequest;
 import com.sahuid.learnroom.model.entity.Comment;
 import com.sahuid.learnroom.model.entity.User;
 import com.sahuid.learnroom.model.vo.CommentVo;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

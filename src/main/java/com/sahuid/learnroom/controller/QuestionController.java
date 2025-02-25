@@ -5,7 +5,7 @@ import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.PageResult;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.constants.UserConstant;
-import com.sahuid.learnroom.model.dto.question.*;
+import com.sahuid.learnroom.model.req.question.*;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.model.vo.QuestionVo;
@@ -13,7 +13,6 @@ import com.sahuid.learnroom.service.QuestionService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("/question")
 @RestController

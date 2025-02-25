@@ -1,13 +1,12 @@
 package com.sahuid.learnroom.service;
 
-import com.sahuid.learnroom.model.dto.questionAndBank.BatchAddQuestionToBankRequest;
-import com.sahuid.learnroom.model.dto.questionAndBank.BatchRemoveQuestionToBankRequest;
-import com.sahuid.learnroom.model.dto.questionbank.QuestionAndBankRequest;
+import com.sahuid.learnroom.model.req.questionAndBank.BatchAddQuestionToBankRequest;
+import com.sahuid.learnroom.model.req.questionAndBank.BatchRemoveQuestionToBankRequest;
+import com.sahuid.learnroom.model.req.questionbank.QuestionAndBankRequest;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

@@ -7,35 +7,28 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.constants.RedisConstant;
 import com.sahuid.learnroom.exception.*;
-import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
-import com.sahuid.learnroom.model.dto.user.UserQueryRequest;
-import com.sahuid.learnroom.model.dto.user.UserRegisterRequest;
-import com.sahuid.learnroom.model.dto.user.UserUpdateRequest;
+import com.sahuid.learnroom.model.req.user.UserLoginRequest;
+import com.sahuid.learnroom.model.req.user.UserQueryRequest;
+import com.sahuid.learnroom.model.req.user.UserRegisterRequest;
+import com.sahuid.learnroom.model.req.user.UserUpdateRequest;
 import com.sahuid.learnroom.model.entity.User;
 
 import com.sahuid.learnroom.mapper.UserMapper;
 import com.sahuid.learnroom.model.vo.UserVo;
 import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
-import io.swagger.models.auth.In;
-import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 
 /**
 * @author Lenovo

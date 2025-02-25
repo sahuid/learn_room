@@ -1,12 +1,11 @@
 package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sahuid.learnroom.model.dto.questionbank.*;
+import com.sahuid.learnroom.model.req.questionbank.*;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.QuestionBankVo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

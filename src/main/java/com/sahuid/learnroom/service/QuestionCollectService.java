@@ -1,10 +1,10 @@
 package com.sahuid.learnroom.service;
 
 import com.sahuid.learnroom.common.PageResult;
-import com.sahuid.learnroom.model.dto.collect.CollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.GetCollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.HasCollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.UnCollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.CollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.GetCollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.HasCollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.UnCollectQuestionRequest;
 import com.sahuid.learnroom.model.entity.QuestionCollect;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;

@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.RequestParamException;
-import com.sahuid.learnroom.model.dto.questionbank.*;
+import com.sahuid.learnroom.model.req.questionbank.*;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.entity.QuestionBank;
 import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
@@ -21,13 +21,9 @@ import com.sahuid.learnroom.mapper.QuestionBandMapper;
 import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 

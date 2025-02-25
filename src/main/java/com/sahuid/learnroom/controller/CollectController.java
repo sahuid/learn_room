@@ -3,11 +3,10 @@ package com.sahuid.learnroom.controller;
 
 import com.sahuid.learnroom.common.PageResult;
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.model.dto.collect.CollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.GetCollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.HasCollectQuestionRequest;
-import com.sahuid.learnroom.model.dto.collect.UnCollectQuestionRequest;
-import com.sahuid.learnroom.model.entity.Question;
+import com.sahuid.learnroom.model.req.collect.CollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.GetCollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.HasCollectQuestionRequest;
+import com.sahuid.learnroom.model.req.collect.UnCollectQuestionRequest;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.service.QuestionCollectService;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,10 @@
 package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.sahuid.learnroom.model.dto.like.HasLikedRequest;
-import com.sahuid.learnroom.model.dto.like.LikeCountRequest;
-import com.sahuid.learnroom.model.dto.like.LikeRequest;
-import com.sahuid.learnroom.model.dto.like.UnLikeRequest;
+import com.sahuid.learnroom.model.req.like.HasLikedRequest;
+import com.sahuid.learnroom.model.req.like.LikeCountRequest;
+import com.sahuid.learnroom.model.req.like.LikeRequest;
+import com.sahuid.learnroom.model.req.like.UnLikeRequest;
 import com.sahuid.learnroom.model.entity.Likes;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,13 +2,11 @@ package com.sahuid.learnroom.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sahuid.learnroom.common.PageResult;
-import com.sahuid.learnroom.model.dto.question.*;
+import com.sahuid.learnroom.model.req.question.*;
 import com.sahuid.learnroom.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.QuestionViewHistoryVo;
 import com.sahuid.learnroom.model.vo.QuestionVo;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
 * @author Lenovo
@@ -42,4 +40,11 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     PageResult<QuestionViewHistoryVo> getQuestionViewHistory(QueryQuestionViewHistoryRequest queryQuestionViewHistoryRequest);
+
+    /**
+     * 从 ES 中查询数据
+     * @param queryQuestionByPageRequest
+     * @return
+     */
+    PageResult<Question> queryFromEs(QueryQuestionByPageRequest queryQuestionByPageRequest);
 }

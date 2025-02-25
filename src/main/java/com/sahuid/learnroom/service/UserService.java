@@ -2,16 +2,14 @@ package com.sahuid.learnroom.service;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.model.dto.user.UserLoginRequest;
-import com.sahuid.learnroom.model.dto.user.UserQueryRequest;
-import com.sahuid.learnroom.model.dto.user.UserRegisterRequest;
-import com.sahuid.learnroom.model.dto.user.UserUpdateRequest;
+import com.sahuid.learnroom.model.req.user.UserLoginRequest;
+import com.sahuid.learnroom.model.req.user.UserQueryRequest;
+import com.sahuid.learnroom.model.req.user.UserRegisterRequest;
+import com.sahuid.learnroom.model.req.user.UserUpdateRequest;
 import com.sahuid.learnroom.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.sahuid.learnroom.model.vo.UserVo;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

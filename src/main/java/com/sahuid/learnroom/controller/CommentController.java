@@ -1,17 +1,14 @@
 package com.sahuid.learnroom.controller;
 
-import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.PageResult;
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.constants.UserConstant;
-import com.sahuid.learnroom.model.dto.comment.PublishCommentRequest;
-import com.sahuid.learnroom.model.dto.comment.QueryCommentByPageRequest;
+import com.sahuid.learnroom.model.req.comment.PublishCommentRequest;
+import com.sahuid.learnroom.model.req.comment.QueryCommentByPageRequest;
 import com.sahuid.learnroom.model.vo.CommentVo;
 import com.sahuid.learnroom.service.CommentService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**

@@ -1,13 +1,11 @@
 package com.sahuid.learnroom.controller;
 
 import com.sahuid.learnroom.common.R;
-import com.sahuid.learnroom.model.dto.like.HasLikedRequest;
-import com.sahuid.learnroom.model.dto.like.LikeCountRequest;
-import com.sahuid.learnroom.model.dto.like.LikeRequest;
-import com.sahuid.learnroom.model.dto.like.UnLikeRequest;
+import com.sahuid.learnroom.model.req.like.HasLikedRequest;
+import com.sahuid.learnroom.model.req.like.LikeCountRequest;
+import com.sahuid.learnroom.model.req.like.LikeRequest;
+import com.sahuid.learnroom.model.req.like.UnLikeRequest;
 import com.sahuid.learnroom.service.LikesService;
-import io.swagger.models.auth.In;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
