@@ -1,6 +1,7 @@
 package com.sahuid.learnroom.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
@@ -22,6 +23,7 @@ import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
@@ -30,10 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -228,21 +227,48 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
     public List<QuestionDto> queryQuestionAssembleBankId() {
         // 查询所有题目
         List<Question> questionList = questionService.list();
+        if (CollUtil.isEmpty(questionList)) {
+            return Collections.emptyList();
+        }
         // 查询所有题库
         LambdaQueryWrapper<QuestionBankQuestion> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(QuestionBankQuestion::getQuestionId);
         wrapper.select(QuestionBankQuestion::getQuestionBandId);
         List<QuestionBankQuestion> questionBankAndQuestionList = this.list(wrapper);
         // 根据题目 id 和题目和题库的关系转化成 map
+        return assembleQuestionDto(questionBankAndQuestionList, questionList);
+    }
+
+    @Override
+    public List<QuestionDto> queryFiveMinutesAgoQuestionAssembleBankId(Date fiveMinutesAgoDate) {
+        // 查询所有题目
+        LambdaQueryWrapper<Question> questionWrapper = new LambdaQueryWrapper<>();
+        questionWrapper.ge(Question::getUpdateTime, fiveMinutesAgoDate);
+        List<Question> questionList = questionService.list(questionWrapper);
+        if (CollUtil.isEmpty(questionList)) {
+            return Collections.emptyList();
+        }
+        // 查询所有题库
+        LambdaQueryWrapper<QuestionBankQuestion> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(QuestionBankQuestion::getQuestionId);
+        wrapper.select(QuestionBankQuestion::getQuestionBandId);
+        wrapper.ge(QuestionBankQuestion::getUpdateTime, fiveMinutesAgoDate);
+        List<QuestionBankQuestion> questionBankAndQuestionList = this.list(wrapper);
+        return assembleQuestionDto(questionBankAndQuestionList, questionList);
+    }
+
+    @NotNull
+    private static List<QuestionDto> assembleQuestionDto(List<QuestionBankQuestion> questionBankAndQuestionList, List<Question> questionList) {
+        // 根据题目 id 和题目和题库的关系转化成 map
         Map<Long, QuestionBankQuestion> questionIdMap = questionBankAndQuestionList
                 .stream()
                 .collect(Collectors.toMap(
-                    QuestionBankQuestion::getQuestionId,
-                    Function.identity(),
-                    (v1, v2) -> v1
-        ));
+                        QuestionBankQuestion::getQuestionId,
+                        Function.identity(),
+                        (v1, v2) -> v1
+                ));
         // 生成 questionDto
-        List<QuestionDto> questionDtoList = questionList.stream()
+        return questionList.stream()
                 .map(question -> {
                     QuestionDto questionDto = new QuestionDto();
                     BeanUtil.copyProperties(question, questionDto, false);
@@ -254,7 +280,6 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
                     }
                     return questionDto;
                 }).collect(Collectors.toList());
-        return questionDtoList;
     }
 }
 

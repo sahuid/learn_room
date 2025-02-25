@@ -8,6 +8,7 @@ import com.sahuid.learnroom.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,4 +55,10 @@ public interface QuestionBankQuestionService extends IService<QuestionBankQuesti
      * @return
      */
     List<QuestionDto> queryQuestionAssembleBankId();
+
+    /**
+     * 查询五分钟前变动的题目，并组装题库id
+     * @return
+     */
+    List<QuestionDto> queryFiveMinutesAgoQuestionAssembleBankId(Date fiveMinutesAgoDate);
 }
