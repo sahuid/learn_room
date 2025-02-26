@@ -99,7 +99,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         Map<Long, Long> replayCountMap = rootIds.stream().collect(Collectors.groupingBy(k -> k, Collectors.counting()));
         list.forEach(commentVo -> {
             Long count = replayCountMap.get(commentVo.getId());
-            commentVo.setReplyCount(Objects.requireNonNullElse(count, 0L));
+            if(count == null) {
+                commentVo.setReplyCount(0L);
+            }else {
+                commentVo.setReplyCount(count);
+            }
         });
         return list;
     }
