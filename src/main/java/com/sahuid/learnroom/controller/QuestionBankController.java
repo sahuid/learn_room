@@ -1,6 +1,7 @@
 package com.sahuid.learnroom.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.jd.platform.hotkey.client.callback.JdHotKeyStore;
 import com.sahuid.learnroom.annotation.RoleCheck;
 import com.sahuid.learnroom.common.R;
 import com.sahuid.learnroom.constants.UserConstant;
@@ -40,7 +41,15 @@ public class QuestionBankController {
      */
     @GetMapping("/queryOne")
     public R<QuestionBankVo> queryQuestionBankById(QueryQuestionBankOneRequest queryQuestionBankOneRequest) {
+        String key = "bank_detail_" + queryQuestionBankOneRequest.getId();
+        if (JdHotKeyStore.isHotKey(key)){
+            Object cacheObject = JdHotKeyStore.get(key);
+            if (cacheObject != null) {
+                return R.ok((QuestionBankVo) cacheObject, "查询成功");
+            }
+        }
         QuestionBankVo questionBank = questionBankService.queryBankById(queryQuestionBankOneRequest);
+        JdHotKeyStore.smartSet(key, questionBank);
         return R.ok(questionBank, "查询成功");
     }
 

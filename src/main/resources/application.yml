@@ -90,5 +90,12 @@ minio:
     secure: false #如果是true，则用的是https而不是http,默认值是true
     bucketName: "test"  # 桶的名字 相当于文件夹
 
+# 热 key 探测
+hotkey:
+  appName: learnroom
+  caffeineSize: 10000
+  pushPeriod: 1000
+  etcdServer: http://127.0.0.1:2379
+
 
 
