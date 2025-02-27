@@ -1,6 +1,6 @@
 spring:
   application:
-    name: springboot-init
+    name: learn-room
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
