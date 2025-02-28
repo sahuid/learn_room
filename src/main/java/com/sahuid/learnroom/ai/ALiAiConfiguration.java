@@ -6,15 +6,13 @@ import com.alibaba.dashscope.common.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
-
 /**
  * @Author: mcj
  * @Description: Ai 模块的 bean 管理
  * @DateTime: 2025/2/5 14:09
  **/
 @Configuration
-public class AiConfiguration {
+public class ALiAiConfiguration {
 
     @Bean
     public Generation generation() {

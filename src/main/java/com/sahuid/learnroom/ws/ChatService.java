@@ -6,7 +6,7 @@ import com.alibaba.dashscope.common.Role;
 import com.alibaba.dashscope.exception.ApiException;
 import com.alibaba.dashscope.exception.InputRequiredException;
 import com.alibaba.dashscope.exception.NoApiKeyException;
-import com.sahuid.learnroom.ai.AiManager;
+import com.sahuid.learnroom.manager.AiManager;
 import com.sahuid.learnroom.config.GetHttpSessionConfig;
 import com.sahuid.learnroom.model.enums.MessageRoleEnums;
 import com.sahuid.learnroom.service.ChatHistoryService;

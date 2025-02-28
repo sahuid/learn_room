@@ -8,10 +8,13 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.sahuid.learnroom.common.PageResult;
+import com.sahuid.learnroom.common.UserThreadLocalData;
+import com.sahuid.learnroom.constants.AiConstant;
 import com.sahuid.learnroom.es.model.QuestionEsDTO;
 import com.sahuid.learnroom.exception.DataBaseAbsentException;
 import com.sahuid.learnroom.exception.DataOperationException;
 import com.sahuid.learnroom.exception.RequestParamException;
+import com.sahuid.learnroom.manager.AiService;
 import com.sahuid.learnroom.mapper.QuestionMapper;
 import com.sahuid.learnroom.model.entity.Question;
 import com.sahuid.learnroom.model.entity.QuestionView;
@@ -23,6 +26,7 @@ import com.sahuid.learnroom.service.QuestionService;
 import com.sahuid.learnroom.service.QuestionViewService;
 import com.sahuid.learnroom.service.UserService;
 import com.sahuid.learnroom.utils.ThrowUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.PageRequest;
@@ -44,14 +48,18 @@ import java.util.stream.Collectors;
 * @createDate 2024-12-12 12:08:39
 */
 @Service
+@Slf4j
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
     implements QuestionService{
 
     @Resource
     private UserService userService;
-
+    
     @Resource
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
+
+    @Resource
+    private AiService aiService;
 
     @Resource
     private QuestionViewService questionViewService;
@@ -268,6 +276,71 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         pageResult.setData(dataList);
         return pageResult;
     }
+
+    @Override
+    public boolean aiGenerateQuestions(AIGenerateQuestionRequest aiGenerateQuestionRequest) {
+        ThrowUtil.throwIf(aiGenerateQuestionRequest == null,
+                () -> new RequestParamException("请求参数异常"));
+        String questionType = aiGenerateQuestionRequest.getQuestionType();
+        Integer number = aiGenerateQuestionRequest.getNumber();
+        if (number == null || number < 0 || number > 100) {
+            log.error("ai 生成题目数量异常");
+            throw new RequestParamException("题目数量异常，需要大于0且不能超过 100");
+        }
+        ThrowUtil.throwIf(StrUtil.isBlank(questionType),
+                () -> new RequestParamException("ai 生成题目类型错误"));
+
+        // 定义系统 prompt
+        String systemPrompt = AiConstant.DEEPSEEK_GENERATE_QUESTION_SYSTEM_PROMPT;
+        // 生成用户 prompt
+        String userPrompt = String.format("题目数量：%s, 题目方向：%s", number, questionType);
+        // 调用 ai 生成
+        String result = aiService.onceChat(systemPrompt, userPrompt);
+        // 结果预处理
+        // 拆分题目
+        List<String> questionList = Arrays.asList(result.split("\n"));
+        // 去除序号和特殊符号
+        List<String> titleList = questionList.stream()
+                // 删除序号
+                .map(line -> StrUtil.removePrefix(line, StrUtil.subBefore(line, " ", false)))
+                // 删除 ` 符号
+                .map(line -> line.replace("`", ""))
+                .collect(Collectors.toList());
+
+        UserVo currentUser = userService.getCurrentUser();
+        // 保存到数据库中
+        List<Question> questions = titleList.stream()
+                .map(title -> {
+                    Question question = new Question();
+                    question.setTitle(title);
+                    question.setUserId(currentUser.getId());
+                    question.setTags("[\"AI待审核\"]");
+                    question.setAnswer(aiGenerateQuestionAnswer(title));
+                    return question;
+                })
+                .collect(Collectors.toList());
+        boolean ans = this.saveBatch(questions);
+        if (!ans) {
+            log.error("ai 生成题目插入题库失败");
+            throw new DataOperationException("ai 生成题目插入题库失败");
+        }
+        return true;
+    }
+
+
+    /**
+     * ai 生成题目答案
+     * @param questionTitle
+     * @return
+     */
+    private String aiGenerateQuestionAnswer(String questionTitle) {
+        // 定义系统提示词
+        String systemPrompt = AiConstant.DEEPSEEK_GENERATE_ANSWER_SYSTEM_PROMPT;
+        // 拼接用户 prompt
+        String userPrompt = String.format("面试题：%s", questionTitle);
+        return aiService.onceChat(systemPrompt, userPrompt);
+    }
+
 }
 
 

@@ -21,6 +21,11 @@ public class QuestionController {
     @Resource
     private  QuestionService questionService;
 
+    /**
+     * 添加题目
+     * @param addQuestionRequest
+     * @return
+     */
     @PostMapping("/add")
     public R<Void> addQuestion(@RequestBody AddQuestionRequest addQuestionRequest) {
         questionService.addQuestion(addQuestionRequest);
@@ -28,12 +33,22 @@ public class QuestionController {
     }
 
 
+    /**
+     * 修改题目
+     * @param updateQuestionRequest
+     * @return
+     */
     @PostMapping("/update")
     public R<Void> updateQuestion(@RequestBody UpdateQuestionRequest updateQuestionRequest) {
         questionService.updateQuestion(updateQuestionRequest);
         return R.ok("修改成功");
     }
 
+    /**
+     * 查询单个题目
+     * @param id
+     * @return
+     */
     @GetMapping("/queryOne")
     public R<QuestionVo> queryQuestion(@RequestParam("id") Long id){
         QuestionVo questionVo = questionService.queryQuestionById(id);
@@ -53,6 +68,11 @@ public class QuestionController {
     }
 
 
+    /**
+     * 题目浏览量增加
+     * @param increaseQuestionViewCountRequest
+     * @return
+     */
     @GetMapping("/view/increase")
     public R<Void> increaseQuestionViewCount(IncreaseQuestionViewCountRequest increaseQuestionViewCountRequest) {
         questionService.increaseQuestionViewCount(increaseQuestionViewCountRequest);
@@ -60,15 +80,31 @@ public class QuestionController {
     }
 
 
+    /**
+     * 查询题目查看历史记录
+     * @param queryQuestionViewHistoryRequest
+     * @return
+     */
     @GetMapping("/view/history")
     public R<PageResult<QuestionViewHistoryVo>> getQuestionViewHistory(QueryQuestionViewHistoryRequest queryQuestionViewHistoryRequest) {
         PageResult<QuestionViewHistoryVo> pageResult = questionService.getQuestionViewHistory(queryQuestionViewHistoryRequest);
         return R.ok(pageResult, "查询成功");
     }
 
+    /**
+     * 通过 ES 搜索题目
+     * @param queryQuestionByPageRequest
+     * @return
+     */
     @PostMapping("/search")
     public R<PageResult<Question>> searchQuestionByPage(@RequestBody QueryQuestionByPageRequest queryQuestionByPageRequest) {
         PageResult<Question> pageResult = questionService.queryFromEs(queryQuestionByPageRequest);
         return R.ok(pageResult, "查询成功");
+    }
+
+    @PostMapping("/ai/generate/question")
+    public R<Boolean> aiGenerateQuestions(@RequestBody AIGenerateQuestionRequest aiGenerateQuestionRequest) {
+        questionService.aiGenerateQuestions(aiGenerateQuestionRequest);
+        return R.ok(true);
     }
 }

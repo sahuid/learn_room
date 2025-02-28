@@ -50,4 +50,10 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     PageResult<Question> queryFromEs(QueryQuestionByPageRequest queryQuestionByPageRequest);
+
+    /**
+     * 使用 ai 生成题目
+     * @param aiGenerateQuestionRequest
+     */
+    boolean aiGenerateQuestions(AIGenerateQuestionRequest aiGenerateQuestionRequest);
 }

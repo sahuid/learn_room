@@ -1,4 +1,4 @@
-package com.sahuid.learnroom.ai;
+package com.sahuid.learnroom.manager;
 
 import com.alibaba.dashscope.aigc.generation.*;
 import com.alibaba.dashscope.common.Message;
@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class AiManager {
 
-    @Value("${ai.api.key}")
+    @Value("${ai.ali.api-key}")
     private String appKey;
 
     @Resource
@@ -73,12 +73,6 @@ public class AiManager {
      * @return
      */
     public String resolveResult(GenerationResult result) {
-        // 其他数据
-        String requestId = result.getRequestId();
-        GenerationUsage usage = result.getUsage();
-        Integer inputTokens = usage.getInputTokens();
-        Integer outputTokens = usage.getOutputTokens();
-        Integer totalTokens = usage.getTotalTokens();
         // 回复内容
         GenerationOutput output = result.getOutput();
         return output.getChoices().get(0).getMessage().getContent();

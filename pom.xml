@@ -131,6 +131,12 @@
             <artifactId>nacos-config-spring-boot-starter</artifactId>
             <version>0.2.12</version>
         </dependency>
+        <!-- 火山引擎 AI 接入：https://www.volcengine.com/experience/ark -->
+        <dependency>
+            <groupId>com.volcengine</groupId>
+            <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
+            <version>0.1.152</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

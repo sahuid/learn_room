@@ -24,8 +24,8 @@ public class GetHttpSessionConfig extends ServerEndpointConfig.Configurator {
     @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
         SaSession session = StpUtil.getSession();
-        String longId = session.getId();
-        Long userId = Long.valueOf(longId);
+        String longinId = (String)session.getLoginId();
+        Long userId = Long.valueOf(longinId);
         sec.getUserProperties().put("userId", userId);
     }
 }

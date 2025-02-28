@@ -59,10 +59,6 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 
-ai:
-  api:
-    key: sk-dca3eae2cae44902ac1801f5a95b4e62
-
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）
