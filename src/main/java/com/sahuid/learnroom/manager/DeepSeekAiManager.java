@@ -36,9 +36,19 @@ public class DeepSeekAiManager implements AiService {
         messages.add(systemMessage);
         messages.add(userMessage);
 
+        return chatAi(messages);
+    }
+
+    @Override
+    public String contextChat(List<ChatMessage> messageList) {
+        return chatAi(messageList);
+    }
+
+    private String chatAi(List<ChatMessage> messageList) {
         ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder()
                 .model(DEFAULT_MODEL)
-                .messages(messages)
+                .messages(messageList)
+                .temperature(1.0)
                 .build();
 
         List<ChatCompletionChoice> choices = arkService.createChatCompletion(chatCompletionRequest).getChoices();

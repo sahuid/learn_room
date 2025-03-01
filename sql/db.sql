@@ -139,3 +139,18 @@ CREATE TABLE `message` (
                            `createTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
                            PRIMARY KEY (`messageId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+# 模拟面试
+CREATE TABLE `mock_interview` (
+                                  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键 id',
+                                  `workExperience` varchar(255) NOT NULL COMMENT '工作年限',
+                                  `jobPosition` varchar(255) NOT NULL COMMENT '工作岗位',
+                                  `difficulty` varchar(255) NOT NULL COMMENT '面试难度',
+                                  `userId` bigint NOT NULL COMMENT '创建人（用户id）',
+                                  `messages` mediumtext COMMENT '消息列表（JSON数组对象，包括总结）',
+                                  `status` int NOT NULL DEFAULT '0' COMMENT '状态（0-待开始，1-开始，2-结束）',
+                                  `createTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                  `updateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+                                  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -1,5 +1,9 @@
 package com.sahuid.learnroom.manager;
 
+import com.volcengine.ark.runtime.model.completion.chat.ChatMessage;
+
+import java.util.List;
+
 /**
  * @Author: mcj
  * @Description: ai对话接口
@@ -14,4 +18,6 @@ public interface AiService {
      * @return
      */
     String onceChat(String systemPrompt, String userPrompt);
+
+    String contextChat(List<ChatMessage> messageList);
 }
